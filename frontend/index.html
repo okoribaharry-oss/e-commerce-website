@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>NovaShop — Modern E-Commerce</title>
+   <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav>
+      <div class="brand" aria-label="NovaShop brand">
+        <img src="src/assets/NOVA Store Smart Shopping Logo.png" alt="NovaShop Logo" />
+        <div class="logo">Nova<span>Shop</span></div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#features">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <button class="cart-btn" onclick="openCart()">
+        🛒 Cart (<span id="cartCount">0</span>)
+      </button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Discover Products You'll Love.</h1>
+
+      <p>
+        Shop premium fashion, electronics, accessories and more.
+        Great products, great prices, delivered straight to your door.
+      </p>
+
+      <a href="#shop" class="hero-btn">Shop Now →</a>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section class="shop-section" id="shop">
+
+    <div class="section-title">
+      <h2>Featured Products</h2>
+      <p>Explore our latest products and best sellers.</p>
+    </div>
+
+    <div class="tools">
+
+      <input
+        type="text"
+        id="search"
+        placeholder="🔍 Search products..."
+        oninput="filterProducts()"
+      />
+
+      <div class="categories">
+        <button class="category active" onclick="setCategory('all', this)">
+          All
+        </button>
+
+        <button class="category" onclick="setCategory('fashion', this)">
+          Fashion
+        </button>
+
+        <button class="category" onclick="setCategory('electronics', this)">
+          Electronics
+        </button>
+
+        <button class="category" onclick="setCategory('accessories', this)">
+          Accessories
+        </button>
+      </div>
+
+    </div>
+
+    <div class="products" id="products">
+
+      <div class="product" data-category="fashion" data-name="Classic Sneakers">
+        <div class="product-image">
+          <span class="badge">NEW</span>
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Classic Sneakers</h3>
+          <div class="rating">★★★★★</div>
+          <div class="price">₦45,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Classic Sneakers', 45000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="product" data-category="electronics" data-name="Wireless Headphones">
+        <div class="product-image">
+          <span class="badge">SALE</span>
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Wireless Headphones</h3>
+          <div class="rating">★★★★★</div>
+          <div class="price">₦75,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Wireless Headphones', 75000, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="product" data-category="fashion" data-name="Premium Watch">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Premium Watch</h3>
+          <div class="rating">★★★★☆</div>
+          <div class="price">₦120,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Premium Watch', 120000, 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="product" data-category="accessories" data-name="Leather Bag">
+        <div class="product-image">
+          <span class="badge">POPULAR</span>
+          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Leather Bag</h3>
+          <div class="rating">★★★★★</div>
+          <div class="price">₦65,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Leather Bag', 65000, 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="product" data-category="electronics" data-name="Smartphone">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Smartphone</h3>
+          <div class="rating">★★★★★</div>
+          <div class="price">₦350,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Smartphone', 350000, 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="product" data-category="fashion" data-name="Denim Jacket">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div class="product-info">
+          <h3>Denim Jacket</h3>
+          <div class="rating">★★★★☆</div>
+          <div class="price">₦55,000</div>
+          <button class="add-btn"
+            onclick="addToCart('Denim Jacket', 55000, 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80')">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+
+    <div class="feature-grid">
+
+      <div class="feature">
+        <div class="feature-icon">🚚</div>
+        <h3>Fast Delivery</h3>
+        <p>Quick and reliable delivery to your doorstep.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Payment</h3>
+        <p>Your payments and information are protected.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">↩️</div>
+        <h3>Easy Returns</h3>
+        <p>Simple and convenient return process.</p>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3>24/7 Support</h3>
+        <p>We're here to help whenever you need us.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CART -->
+  <aside class="cart" id="cart">
+
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button onclick="closeCart()">×</button>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+      <div class="empty">Your cart is empty 🛒</div>
+    </div>
+
+    <div class="cart-footer">
+
+      <div class="total">
+        <span>Total:</span>
+        <span id="cartTotal">₦0</span>
+      </div>
+
+      <button class="checkout" onclick="checkout()">
+        Proceed to Checkout
+      </button>
+
+    </div>
+
+  </aside>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+
+    <div class="footer-grid">
+
+      <div>
+        <h3>NovaShop</h3>
+        <p>
+          Your modern destination for quality products,
+          great prices and excellent service.
+        </p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <p>Home</p>
+        <p>Shop</p>
+        <p>About Us</p>
+        <p>Contact</p>
+      </div>
+
+      <div>
+        <h3>Customer Service</h3>
+        <p>Shipping Information</p>
+        <p>Returns & Refunds</p>
+        <p>Privacy Policy</p>
+        <p>Terms & Conditions</p>
+      </div>
+
+      <div>
+        <h3>Contact</h3>
+        <p>📧 hello@novashop.com</p>
+        <p>📞 +234 800 123 4567</p>
+        <p>📍 Nigeria</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 NovaShop. All rights reserved.
+    </div>
+
+  </footer>
+
+  <script>
+
+    let cart = [];
+    let selectedCategory = "all";
+
+    // ADD PRODUCT TO CART
+    function addToCart(name, price, image) {
+
+      const existing = cart.find(item => item.name === name);
+
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({
+          name,
+          price,
+          image,
+          quantity: 1
+        });
+      }
+
+      updateCart();
+      openCart();
+    }
+
+    // UPDATE CART
+    function updateCart() {
+
+      const cartItems = document.getElementById("cartItems");
+      const cartCount = document.getElementById("cartCount");
+      const cartTotal = document.getElementById("cartTotal");
+
+      cartItems.innerHTML = "";
+
+      if (cart.length === 0) {
+        cartItems.innerHTML =
+          '<div class="empty">Your cart is empty 🛒</div>';
+
+        cartCount.textContent = "0";
+        cartTotal.textContent = "₦0";
+
+        return;
+      }
+
+      let total = 0;
+      let count = 0;
+
+      cart.forEach((item, index) => {
+
+        total += item.price * item.quantity;
+        count += item.quantity;
+
+        const div = document.createElement("div");
+
+        div.className = "cart-item";
+
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+
+          <div class="cart-item-info">
+
+            <h4>${item.name}</h4>
+
+            <p>₦${item.price.toLocaleString()}</p>
+
+            <div class="quantity">
+              <button onclick="changeQuantity(${index}, -1)">−</button>
+              <span>${item.quantity}</span>
+              <button onclick="changeQuantity(${index}, 1)">+</button>
+            </div>
+
+            <span class="remove" onclick="removeItem(${index})">
+              Remove
+            </span>
+
+          </div>
+        `;
+
+        cartItems.appendChild(div);
+      });
+
+      cartCount.textContent = count;
+      cartTotal.textContent = "₦" + total.toLocaleString();
+    }
+
+    // CHANGE QUANTITY
+    function changeQuantity(index, amount) {
+
+      cart[index].quantity += amount;
+
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+
+      updateCart();
+    }
+
+    // REMOVE ITEM
+    function removeItem(index) {
+
+      cart.splice(index, 1);
+
+      updateCart();
+    }
+
+    // OPEN CART
+    function openCart() {
+      document.getElementById("cart").classList.add("open");
+    }
+
+    // CLOSE CART
+    function closeCart() {
+      document.getElementById("cart").classList.remove("open");
+    }
+
+    // CATEGORY FILTER
+    function setCategory(category, button) {
+
+      selectedCategory = category;
+
+      document.querySelectorAll(".category")
+        .forEach(btn => btn.classList.remove("active"));
+
+      button.classList.add("active");
+
+      filterProducts();
+    }
+
+    // SEARCH + CATEGORY FILTER
+    function filterProducts() {
+
+      const search =
+        document.getElementById("search")
+        .value
+        .toLowerCase();
+
+      document.querySelectorAll(".product")
+        .forEach(product => {
+
+          const name =
+            product.dataset.name.toLowerCase();
+
+          const category =
+            product.dataset.category;
+
+          const matchesSearch =
+            name.includes(search);
+
+          const matchesCategory =
+            selectedCategory === "all" ||
+            category === selectedCategory;
+
+          product.style.display =
+            matchesSearch && matchesCategory
+              ? "block"
+              : "none";
+        });
+    }
+
+    // CHECKOUT
+    function checkout() {
+
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      alert(
+        "Thank you for shopping with NovaShop! " +
+        "Connect this button to your payment gateway for real checkout."
+      );
+    }
+
+  </script>
+
+</body>
+</html>
