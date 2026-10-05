@@ -31,7 +31,11 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Test payment verification
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Test backend
         run: npm test
         working-directory: backend
 
