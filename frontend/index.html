@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f7f8fc" />
   <meta name="description" content="Discover quality fashion, electronics and accessories at NovaShop. Great finds, fair prices, delivered to your door." />
+  <meta name="site-mode" content="%VITE_SITE_MODE%" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="NovaShop — Modern E-Commerce" />
+  <meta property="og:description" content="Discover quality fashion, electronics and accessories at NovaShop." />
 
   <title>NovaShop — Modern E-Commerce</title>
-  <link rel="stylesheet" href="src/style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="src/style.css" />
 </head>
 
 <body>
@@ -15,10 +20,10 @@
   <!-- NAVBAR -->
   <header>
     <nav>
-      <div class="brand" aria-label="NovaShop brand">
+      <a class="brand" href="#home" aria-label="NovaShop home">
         <img src="src/assets/NOVA Store Smart Shopping Logo.png" alt="NovaShop Logo" />
         <div class="logo">Nova<span>Shop</span></div>
-      </div>
+      </a>
 
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
@@ -73,23 +78,23 @@
       />
 
       <div class="categories">
-        <button class="category active" onclick="setCategory('all', this)">
+        <button class="category active" data-category="all" type="button" aria-pressed="true" onclick="setCategory('all', this)">
           All
         </button>
 
-        <button class="category" onclick="setCategory('fashion', this)">
+        <button class="category" data-category="fashion" type="button" aria-pressed="false" onclick="setCategory('fashion', this)">
           Fashion
         </button>
 
-        <button class="category" onclick="setCategory('electronics', this)">
+        <button class="category" data-category="electronics" type="button" aria-pressed="false" onclick="setCategory('electronics', this)">
           Electronics
         </button>
 
-        <button class="category" onclick="setCategory('accessories', this)">
+        <button class="category" data-category="accessories" type="button" aria-pressed="false" onclick="setCategory('accessories', this)">
           Accessories
         </button>
 
-        <button class="category" onclick="setCategory('gaming', this)">
+        <button class="category" data-category="gaming" type="button" aria-pressed="false" onclick="setCategory('gaming', this)">
           Gaming
         </button>
       </div>
@@ -116,29 +121,29 @@
 
     <div class="feature-grid">
 
-      <div class="feature">
+      <article class="feature">
         <div class="feature-icon">🚚</div>
         <h3>Fast Delivery</h3>
         <p>Quick and reliable delivery to your doorstep.</p>
-      </div>
+      </article>
 
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Secure Payment</h3>
-        <p>Your payments and information are protected.</p>
-      </div>
+      <article class="feature">
+        <div class="feature-icon">🛍️</div>
+        <h3>Easy ordering</h3>
+        <p>Find what you need and keep your picks in your cart.</p>
+      </article>
 
-      <div class="feature">
+      <article class="feature">
         <div class="feature-icon">↩️</div>
         <h3>Easy Returns</h3>
         <p>Simple and convenient return process.</p>
-      </div>
+      </article>
 
-      <div class="feature">
+      <article class="feature">
         <div class="feature-icon">💬</div>
         <h3>24/7 Support</h3>
         <p>We're here to help whenever you need us.</p>
-      </div>
+      </article>
 
     </div>
 
@@ -308,24 +313,23 @@
 
       <div>
         <h3>Quick Links</h3>
-        <p>Home</p>
-        <p>Shop</p>
-        <p>About Us</p>
-        <p>Contact</p>
+        <p><a href="#home">Home</a></p>
+        <p><a href="#shop">Shop</a></p>
+        <p><a href="#features">Our services</a></p>
+        <p><a href="#contact">Contact</a></p>
       </div>
 
       <div>
         <h3>Customer Service</h3>
-        <p>Shipping Information</p>
-        <p>Returns & Refunds</p>
-        <p>Privacy Policy</p>
-        <p>Terms & Conditions</p>
+        <p><a href="mailto:hello@novashop.com">Shipping information</a></p>
+        <p><a href="mailto:hello@novashop.com">Returns &amp; refunds</a></p>
+        <p><a href="mailto:hello@novashop.com">Help &amp; support</a></p>
       </div>
 
       <div>
         <h3>Contact</h3>
-        <p>📧 hello@novashop.com</p>
-        <p>📞 +234 800 123 4567</p>
+        <p>📧 <a href="mailto:hello@novashop.com">hello@novashop.com</a></p>
+        <p>📞 <a href="tel:+2348001234567">+234 800 123 4567</a></p>
         <p>📍 Nigeria</p>
       </div>
 
@@ -339,7 +343,12 @@
 
   <script>
 
-    const API_BASE_URL = "/api";
+    const API_BASE_URL = document.querySelector('meta[name="site-mode"]').content === "static"
+      ? ""
+      : "/api";
+    const CART_STORAGE_KEY = "novashopCart";
+    const MAX_ITEM_QUANTITY = 99;
+    const IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23eeeff4'/%3E%3Cpath d='M220 240l55-60 42 44 31-35 52 51H220z' fill='%23b8b9c9'/%3E%3Ccircle cx='365' cy='145' r='19' fill='%23b8b9c9'/%3E%3C/svg%3E";
     let cart = [];
     let selectedCategory = "all";
     let allProducts = [];
@@ -365,6 +374,56 @@
     const assistantMessages = document.getElementById("assistantMessages");
     const assistantForm = document.getElementById("assistantForm");
     const assistantInput = document.getElementById("assistantInput");
+    let cartReturnFocus = cartTrigger;
+
+    function restoreCart() {
+      try {
+        const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
+        if (!Array.isArray(savedCart)) throw new Error("Saved cart is not a list.");
+
+        return savedCart.flatMap(item => {
+          if (
+            !item ||
+            (typeof item.productId !== "string" && typeof item.productId !== "number") ||
+            !String(item.productId) ||
+            typeof item.name !== "string" ||
+            !item.name.trim() ||
+            !Number.isFinite(Number(item.price)) ||
+            Number(item.price) <= 0 ||
+            !Number.isInteger(Number(item.quantity)) ||
+            Number(item.quantity) < 1
+          ) {
+            return [];
+          }
+
+          return [{
+            productId: item.productId,
+            name: item.name,
+            price: Number(item.price),
+            image: typeof item.image === "string" ? item.image : "",
+            quantity: Math.min(Number(item.quantity), MAX_ITEM_QUANTITY)
+          }];
+        });
+      } catch {
+        showToast("Your saved cart couldn't be restored.");
+        return [];
+      }
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      } catch {
+        showToast("Cart changes couldn't be saved in this browser.");
+      }
+    }
+
+    function setProductImage(image, src) {
+      image.src = src || IMAGE_FALLBACK;
+      image.addEventListener("error", () => {
+        image.src = IMAGE_FALLBACK;
+      }, { once: true });
+    }
 
     function showToast(message) {
       const toast = document.getElementById("toast");
@@ -381,11 +440,11 @@
       assistantInput.focus();
     }
 
-    function closeAssistant() {
+    function closeAssistant(restoreFocus = true) {
       shoppingAssistant.classList.remove("open");
       shoppingAssistant.setAttribute("aria-hidden", "true");
       assistantLauncher.setAttribute("aria-expanded", "false");
-      assistantLauncher.focus();
+      if (restoreFocus) assistantLauncher.focus();
     }
 
     assistantLauncher.addEventListener("click", () => {
@@ -410,7 +469,7 @@
         const card = document.createElement("article");
         card.className = "assistant-product";
         const image = document.createElement("img");
-        image.src = product.image;
+        setProductImage(image, product.image);
         image.alt = "";
         image.loading = "lazy";
         const details = document.createElement("div");
@@ -444,13 +503,21 @@
         return { text: "Hi! Tell me what you’re shopping for, your budget, or ask me a store question." };
       }
       if (/\b(delivery|shipping|deliver)\b/.test(text)) {
-        return { text: "We offer delivery to your doorstep. Delivery timing and fees depend on your location; enter your address at checkout or contact hello@novashop.com for details." };
+        return {
+          text: apiAvailable
+            ? "We offer delivery to your doorstep. Delivery timing and fees depend on your location; enter your address at checkout or contact hello@novashop.com for details."
+            : "Delivery is not available through this storefront preview yet. Contact hello@novashop.com for help with an order."
+        };
       }
       if (/\b(return|refund|exchange)\b/.test(text)) {
         return { text: "For help with a return or refund, contact hello@novashop.com with your order details so the team can assist you." };
       }
       if (/\b(payment|pay|transfer|bank|cash on delivery)\b/.test(text)) {
-        return { text: "Checkout currently supports manual bank transfer. Your order stays pending until the payment is independently verified. Please confirm the bank details before transferring." };
+        return {
+          text: apiAvailable
+            ? "Checkout currently supports manual bank transfer. Your order stays pending until the payment is independently verified. Please confirm the bank details before transferring."
+            : "Online checkout isn't available on this storefront preview. Contact hello@novashop.com for help placing an order."
+        };
       }
       if (/\b(contact|support|help)\b/.test(text)) {
         return { text: "You can reach NovaShop support at hello@novashop.com or +234 800 123 4567." };
@@ -466,7 +533,7 @@
       const budgetMatch = text.match(/(?:under|below|less than|max(?:imum)?|budget(?: of)?)\s*(?:₦|ngn)?\s*([\d,.]+)\s*(k)?/i);
       let budget = budgetMatch ? Number(budgetMatch[1].replace(/[,.]/g, "")) : null;
       if (budget !== null && budgetMatch[2]) budget *= 1000;
-      const queryWords = text.split(/[^a-z0-9]+/).filter(word => word.length > 2);
+      const queryWords = text.split(/[^a-z0-9]+/).filter(word => word.length > 1);
       let matches = catalog.filter(product => {
         const matchesCategory = !matchedCategory || product.category === matchedCategory;
         const matchesBudget = budget === null || Number(product.price) <= budget;
@@ -674,18 +741,41 @@
       if (event.key === "Escape") {
         if (shoppingAssistant.classList.contains("open")) closeAssistant();
         else if (accountCenter.classList.contains("open")) closeAccount();
-        else if (!paymentCenter.classList.contains("open")) closeCart();
-        else closePayment();
+        else if (paymentCenter.classList.contains("open")) closePayment();
+        else if (cartPanel.classList.contains("open")) closeCart();
         toggleMenu(true);
+      } else if (event.key === "Tab") {
+        const activeDialog = [cartPanel, paymentCenter, accountCenter]
+          .find(dialog => dialog.classList.contains("open"));
+        if (!activeDialog) return;
+
+        const focusable = [...activeDialog.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )].filter(element => element.getClientRects().length > 0);
+        if (!focusable.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !activeDialog.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !activeDialog.contains(document.activeElement))) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     });
 
     // ADD PRODUCT TO CART
     function addToCart(name, price, image, productId) {
 
-      const existing = cart.find(item => item.productId === productId);
+      const existing = cart.find(item => String(item.productId) === String(productId));
 
       if (existing) {
+        if (existing.quantity >= MAX_ITEM_QUANTITY) {
+          showToast(`You can add up to ${MAX_ITEM_QUANTITY} of this item.`);
+          return;
+        }
         existing.quantity++;
       } else {
         cart.push({
@@ -716,7 +806,9 @@
           '<div class="empty">Your cart is empty 🛒</div>';
 
         cartCount.textContent = "0";
+        cartTrigger.setAttribute("aria-label", "Open shopping cart, 0 items");
         cartTotal.textContent = "₦0";
+        saveCart();
 
         return;
       }
@@ -732,7 +824,7 @@
         const div = document.createElement("div");
         div.className = "cart-item";
         const image = document.createElement("img");
-        image.src = item.image;
+        setProductImage(image, item.image);
         image.alt = item.name;
         const info = document.createElement("div");
         info.className = "cart-item-info";
@@ -753,6 +845,7 @@
         increase.type = "button";
         increase.textContent = "+";
         increase.setAttribute("aria-label", `Increase ${item.name} quantity`);
+        increase.disabled = item.quantity >= MAX_ITEM_QUANTITY;
         increase.addEventListener("click", () => changeQuantity(index, 1));
         quantity.append(decrease, quantityValue, increase);
         const remove = document.createElement("button");
@@ -768,15 +861,23 @@
       });
 
       cartCount.textContent = count;
+      cartTrigger.setAttribute(
+        "aria-label",
+        `Open shopping cart, ${count} ${count === 1 ? "item" : "items"}`
+      );
       cartTotal.textContent = "₦" + total.toLocaleString();
+      saveCart();
     }
 
     // CHANGE QUANTITY
     function changeQuantity(index, amount) {
 
-      cart[index].quantity += amount;
+      cart[index].quantity = Math.min(
+        MAX_ITEM_QUANTITY,
+        cart[index].quantity + amount
+      );
 
-      if (cart[index].quantity <= 0) {
+      if (cart[index].quantity < 1) {
         cart.splice(index, 1);
       }
 
@@ -792,7 +893,13 @@
     }
 
     // OPEN CART
-    function openCart() {
+    function openCart(returnFocus = document.activeElement) {
+      if (!cartPanel.classList.contains("open")) {
+        cartReturnFocus = returnFocus instanceof HTMLElement && returnFocus !== document.body
+          ? returnFocus
+          : cartTrigger;
+      }
+      if (shoppingAssistant.classList.contains("open")) closeAssistant(false);
       cartPanel.classList.add("open");
       cartPanel.setAttribute("aria-hidden", "false");
       cartBackdrop.classList.add("visible");
@@ -801,13 +908,15 @@
     }
 
     // CLOSE CART
-    function closeCart() {
+    function closeCart(restoreFocus = true) {
       if (!cartPanel.classList.contains("open")) return;
       cartPanel.classList.remove("open");
       cartPanel.setAttribute("aria-hidden", "true");
       cartBackdrop.classList.remove("visible");
       document.body.classList.remove("no-scroll");
-      cartTrigger.focus();
+      if (restoreFocus) {
+        (cartReturnFocus.isConnected ? cartReturnFocus : cartTrigger).focus();
+      }
     }
 
     // CATEGORY FILTER
@@ -815,10 +924,11 @@
 
       selectedCategory = category;
 
-      document.querySelectorAll(".category")
-        .forEach(btn => btn.classList.remove("active"));
-
-      button.classList.add("active");
+      document.querySelectorAll(".category").forEach(btn => {
+        const isSelected = btn === button;
+        btn.classList.toggle("active", isSelected);
+        btn.setAttribute("aria-pressed", String(isSelected));
+      });
 
       filterProducts();
     }
@@ -826,44 +936,47 @@
     // SEARCH + CATEGORY FILTER
     function filterProducts() {
 
-      const search =
-        document.getElementById("search")
-        .value
-        .toLowerCase();
+      const search = document.getElementById("search").value.trim().toLowerCase();
 
       const products = [...document.querySelectorAll(".product")];
+      document.querySelector(".empty-state")?.remove();
       let visibleCount = 0;
       products.forEach(product => {
+        const matchesSearch = product.dataset.search.includes(search);
+        const matchesCategory = selectedCategory === "all" ||
+          product.dataset.category === selectedCategory;
+        const isVisible = matchesSearch && matchesCategory;
+        product.hidden = !isVisible;
+        if (isVisible) visibleCount++;
+      });
 
-          const name =
-            product.dataset.name.toLowerCase();
-
-          const category =
-            product.dataset.category;
-
-          const matchesSearch =
-            name.includes(search);
-
-          const matchesCategory =
-            selectedCategory === "all" ||
-            category === selectedCategory;
-
-          const isVisible = matchesSearch && matchesCategory;
-          product.hidden = !isVisible;
-          if (isVisible) visibleCount++;
-        });
       document.getElementById("resultsCount").textContent =
         `${visibleCount} ${visibleCount === 1 ? "product" : "products"} found`;
+
+      if (products.length && !visibleCount) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "empty empty-state";
+        const message = document.createElement("p");
+        message.textContent = "No products match those filters.";
+        const clearButton = document.createElement("button");
+        clearButton.type = "button";
+        clearButton.className = "clear-filters";
+        clearButton.textContent = "Clear filters";
+        clearButton.addEventListener("click", () => {
+          document.getElementById("search").value = "";
+          setCategory("all", document.querySelector('.category[data-category="all"]'));
+        });
+        emptyState.append(message, clearButton);
+        document.getElementById("products").appendChild(emptyState);
+      }
     }
 
     function sortProducts() {
       const sortBy = document.getElementById("sortProducts").value;
       const products = [...document.querySelectorAll(".product")];
-      const priceOf = product => Number(product.querySelector(".price").textContent.replace(/[^\d]/g, ""));
-
       products.sort((a, b) => {
-        if (sortBy === "price-low") return priceOf(a) - priceOf(b);
-        if (sortBy === "price-high") return priceOf(b) - priceOf(a);
+        if (sortBy === "price-low") return Number(a.dataset.price) - Number(b.dataset.price);
+        if (sortBy === "price-high") return Number(b.dataset.price) - Number(a.dataset.price);
         if (sortBy === "name") return a.dataset.name.localeCompare(b.dataset.name);
         return Number(a.dataset.order) - Number(b.dataset.order);
       });
@@ -879,7 +992,7 @@
     function checkout() {
 
       if (cart.length === 0) {
-        alert("Your cart is empty.");
+        showToast("Your cart is empty.");
         return;
       }
 
@@ -908,7 +1021,7 @@
         orderItems.appendChild(row);
       });
 
-      closeCart();
+      closeCart(false);
       paymentDetails.hidden = false;
       paymentSuccess.hidden = true;
       paymentCenter.classList.add("open");
@@ -924,7 +1037,7 @@
       paymentCenter.setAttribute("aria-hidden", "true");
       paymentBackdrop.classList.remove("visible");
       document.body.classList.remove("no-scroll");
-      openCart();
+      openCart(cartReturnFocus);
     }
 
     async function confirmTransfer() {
@@ -1001,19 +1114,27 @@
 
     function renderProducts(products) {
       const productGrid = document.getElementById("products");
-      productGrid.innerHTML = "";
+      productGrid.replaceChildren();
 
       if (!products.length) {
-        productGrid.innerHTML = '<div class="empty">No products available right now.</div>';
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No products available right now.";
+        productGrid.appendChild(empty);
         document.getElementById("resultsCount").textContent = "0 products found";
         return;
       }
 
       products.forEach((product, index) => {
-        const card = document.createElement("div");
+        const card = document.createElement("article");
         card.className = "product";
         card.dataset.category = product.category;
         card.dataset.name = product.name;
+        card.dataset.search = [product.name, product.category, product.description]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        card.dataset.price = String(product.price);
         card.dataset.order = String(index);
 
         const imageContainer = document.createElement("div");
@@ -1025,9 +1146,10 @@
           imageContainer.appendChild(badge);
         }
         const image = document.createElement("img");
-        image.src = product.image;
+        setProductImage(image, product.image);
         image.alt = product.name;
         image.loading = "lazy";
+        image.decoding = "async";
         imageContainer.appendChild(image);
 
         const info = document.createElement("div");
@@ -1038,9 +1160,16 @@
         const rating = document.createElement("div");
         rating.className = "rating";
         rating.textContent = "★".repeat(ratingValue) + "☆".repeat(5 - ratingValue);
+        rating.setAttribute("aria-label", ratingValue
+          ? `Rated ${ratingValue} out of 5`
+          : "Not yet rated");
+        rating.setAttribute("role", "img");
         const price = document.createElement("div");
         price.className = "price";
         price.textContent = `₦${Number(product.price).toLocaleString()}`;
+        const category = document.createElement("span");
+        category.className = "product-category";
+        category.textContent = product.category;
         const addButton = document.createElement("button");
         addButton.className = "add-btn";
         addButton.type = "button";
@@ -1048,7 +1177,7 @@
         addButton.addEventListener("click", () => {
           addToCart(product.name, Number(product.price), product.image, product.id);
         });
-        info.append(name, rating, price, addButton);
+        info.append(name, category, rating, price, addButton);
         card.append(imageContainer, info);
 
         productGrid.appendChild(card);
@@ -1058,21 +1187,26 @@
     }
 
     async function loadProducts() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/products`);
+      if (API_BASE_URL) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/products`);
+          if (!response.ok) {
+            throw new Error("Unable to load products.");
+          }
 
-        if (!response.ok) {
-          throw new Error("Unable to load products.");
+          const data = await response.json();
+          if (!Array.isArray(data.products)) {
+            throw new Error("The product catalog response is invalid.");
+          }
+
+          apiAvailable = true;
+          allProducts = data.products;
+        } catch (error) {
+          console.warn("Live product catalog unavailable; using the built-in catalog.", error);
         }
+      }
 
-        const data = await response.json();
-        if (!Array.isArray(data.products)) {
-          throw new Error("The product catalog response is invalid.");
-        }
-
-        apiAvailable = true;
-        allProducts = data.products;
-      } catch {
+      if (!apiAvailable) {
         try {
           const response = await fetch(new URL("./products.json", document.baseURI));
           if (!response.ok) {
@@ -1089,16 +1223,23 @@
           notice.textContent = "You're browsing our storefront preview. Customer accounts and checkout are unavailable here.";
           notice.hidden = false;
         } catch (error) {
-          document.getElementById("products").innerHTML = '<div class="empty">Unable to load products right now.</div>';
+          const message = error.message || "Unable to load products.";
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = message;
+          document.getElementById("products").replaceChildren(empty);
           document.getElementById("resultsCount").textContent = "0 products found";
-          showToast(error.message || "Unable to load products.");
+          showToast(message);
           return;
         }
       }
 
+      updateCart();
       renderProducts(allProducts);
     }
 
+    cart = restoreCart();
+    updateCart();
     loadProducts().then(restoreSession);
 
   </script>

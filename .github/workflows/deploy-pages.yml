@@ -36,6 +36,8 @@ jobs:
         working-directory: frontend
 
       - name: Build site
+        env:
+          VITE_SITE_MODE: static
         run: npm run build -- --base=/${{ github.event.repository.name }}/
         working-directory: frontend
 

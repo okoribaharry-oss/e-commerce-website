@@ -87,6 +87,8 @@ nav {
   flex-shrink: 0;
   gap: 10px;
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
 }
 
 .brand img {
@@ -440,6 +442,11 @@ nav {
   transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
+.product-image img[src^="data:image/svg+xml"] {
+  object-fit: contain;
+  padding: 22px;
+}
+
 .product:hover .product-image img {
   transform: scale(1.06);
 }
@@ -463,17 +470,33 @@ nav {
 }
 
 .product-info h3 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
   color: var(--dark);
   font-family: "Manrope", sans-serif;
   font-size: 16px;
   font-weight: 700;
 }
 
+.product-category {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: capitalize;
+}
+
 .rating {
   margin-bottom: 11px;
   color: #f0ad32;
   letter-spacing: 2px;
+}
+
+.rating[aria-label="Not yet rated"] {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .price {
@@ -494,6 +517,18 @@ nav {
 
 .add-btn:hover {
   background: var(--primary);
+}
+
+.clear-filters {
+  min-height: 42px;
+  margin-top: 8px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--primary-dark);
+  cursor: pointer;
+  font-weight: 700;
 }
 
 /* Store benefits */
@@ -635,6 +670,11 @@ nav {
   object-fit: cover;
 }
 
+.cart-item img[src^="data:image/svg+xml"] {
+  object-fit: contain;
+  padding: 8px;
+}
+
 .cart-item-info {
   flex: 1;
   min-width: 0;
@@ -668,6 +708,11 @@ nav {
   background: var(--light);
   color: var(--dark);
   cursor: pointer;
+}
+
+.quantity button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .remove {
@@ -711,6 +756,19 @@ nav {
   margin-top: 70px;
   color: var(--muted);
   text-align: center;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 35px 20px;
+  border: 1px dashed var(--border);
+  border-radius: 18px;
+  background: var(--white);
+}
+
+.empty-state p {
+  margin: 0;
 }
 
 /* Manual bank transfer center */
@@ -1483,6 +1541,15 @@ footer p {
   line-height: 1.75;
 }
 
+footer a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+footer a:hover {
+  color: var(--white);
+}
+
 .footer-bottom {
   width: min(1240px, 100%);
   margin: 36px auto 0;
@@ -1505,9 +1572,9 @@ footer p {
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1100px) {
   .products {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -1523,7 +1590,7 @@ footer p {
   }
 
   .products {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .feature-grid {
@@ -1535,7 +1602,7 @@ footer p {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   html {
     scroll-padding-top: 76px;
   }
@@ -1652,6 +1719,10 @@ footer p {
   .category {
     flex: 1 1 auto;
     padding: 0 12px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sort-control {
