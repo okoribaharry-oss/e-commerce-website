@@ -214,6 +214,18 @@
         </div>
       </div>
 
+      <fieldset class="payment-methods" id="paymentMethods">
+        <legend>Choose how you’ll pay</legend>
+        <label class="payment-method-option">
+          <input type="radio" name="paymentMethod" value="paystack" checked onchange="updatePaymentMethod()">
+          <span><strong>Pay online</strong><small>Secure checkout with Paystack</small></span>
+        </label>
+        <label class="payment-method-option">
+          <input type="radio" name="paymentMethod" value="manual" onchange="updatePaymentMethod()">
+          <span><strong>Bank transfer</strong><small>Transfer directly to our account</small></span>
+        </label>
+      </fieldset>
+
       <div class="account-card payment-provider-card">
         <div class="account-heading">
           <span id="paymentProviderTitle">Protected checkout</span>
@@ -223,6 +235,27 @@
           <span aria-hidden="true">✓</span>
           <p id="paymentProviderDescription">Pay securely on Paystack. Your card details are never stored on this site.</p>
         </div>
+      </div>
+
+      <div class="account-card bank-transfer-card" id="bankTransferDetails" hidden>
+        <div class="account-heading">
+          <span>Bank transfer details</span>
+          <span class="manual-badge">TRANSFER</span>
+        </div>
+        <div class="account-detail">
+          <span>Bank name</span>
+          <strong>Not provided — please confirm before transferring</strong>
+        </div>
+        <div class="account-detail">
+          <span>Account name</span>
+          <strong>Sotonye Wealth Ejiro</strong>
+        </div>
+        <div class="account-detail account-number-row">
+          <span>Account number</span>
+          <strong id="bankAccountNumber">9069502901</strong>
+          <button class="copy-account" type="button" onclick="copyBankAccount()">Copy</button>
+        </div>
+        <p class="payment-warning" id="bankTransferWarning">After transferring, confirm below. We’ll email the store with your order details; your transfer still needs to be verified before your order is processed.</p>
       </div>
 
       <div class="payment-order">
@@ -239,10 +272,10 @@
     <div class="payment-success" id="paymentSuccess" hidden>
       <div class="celebration-confetti" id="celebrationConfetti" aria-hidden="true"></div>
       <div class="success-icon" aria-hidden="true">✓</div>
-      <p class="payment-eyebrow">PAYMENT VERIFIED</p>
-      <h2>Payment confirmed</h2>
-      <p class="success-message">Your payment has been verified. We’ll send your order to the store for processing.</p>
-      <div class="verification-note"><strong>Payment verified</strong><span>Your payment was confirmed securely by Paystack.</span></div>
+      <p class="payment-eyebrow" id="paymentSuccessEyebrow">PAYMENT VERIFIED</p>
+      <h2 id="paymentSuccessTitle">Payment confirmed</h2>
+      <p class="success-message" id="paymentSuccessMessage">Your payment has been verified. We’ll send your order to the store for processing.</p>
+      <div class="verification-note"><strong id="paymentSuccessNoteTitle">Payment verified</strong><span id="paymentSuccessNote">Your payment was confirmed securely by Paystack.</span></div>
       <button class="transfer-confirm" type="button" onclick="returnToCart()">Back to my cart</button>
     </div>
   </section>
@@ -1004,6 +1037,68 @@
       filterProducts();
     }
 
+    function selectedPaymentMethod() {
+      return document.querySelector('input[name="paymentMethod"]:checked')?.value || "paystack";
+    }
+
+    function updatePaymentMethod() {
+      const transferSelected = selectedPaymentMethod() === "manual";
+      const providerCard = document.querySelector(".payment-provider-card");
+      const bankTransferDetails = document.getElementById("bankTransferDetails");
+      const transferButton = document.getElementById("paystackButton");
+      const isPreview = !apiAvailable || !API_BASE_URL;
+
+      providerCard.hidden = transferSelected && !isPreview;
+      bankTransferDetails.hidden = !transferSelected && !isPreview;
+      transferButton.textContent = isPreview
+        ? "Email delivery request"
+        : transferSelected
+          ? "I’ve made the transfer — send confirmation"
+          : "Continue to secure checkout";
+      document.getElementById("paymentProviderTitle").textContent = isPreview
+        ? "Manual order request"
+        : transferSelected
+          ? "Bank transfer"
+          : "Protected checkout";
+      document.getElementById("paymentProviderBadge").textContent = isPreview
+        ? "EMAIL"
+        : transferSelected
+          ? "TRANSFER"
+          : "PAYSTACK";
+      document.getElementById("paymentProviderDescription").textContent = isPreview
+        ? "Your email app must be configured. Send the draft to request an order; this preview cannot confirm a transfer."
+        : transferSelected
+          ? "Transfer the order total to the account below, then submit your confirmation."
+          : "Pay securely on Paystack. Your card details are never stored on this site.";
+      document.getElementById("bankTransferWarning").textContent = isPreview
+        ? "This preview cannot receive transfer confirmations. Email the store to request an order; opening a draft does not submit it or confirm payment."
+        : "After transferring, confirm below. We’ll email the store with your order details; your transfer still needs to be verified before your order is processed.";
+      document.getElementById("paymentDisclaimer").textContent = isPreview
+        ? "This opens an email draft, not a completed order. The store must confirm your request and payment."
+        : transferSelected
+          ? "We’ll show confirmation only after the store has received your order email. The store must still verify your transfer."
+          : "You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified.";
+      document.getElementById("paymentEyebrow").textContent = isPreview
+        ? "DELIVERY REQUEST"
+        : transferSelected
+          ? "BANK TRANSFER"
+          : "SECURE PAYSTACK CHECKOUT";
+      document.getElementById("paymentIntro").textContent = isPreview
+        ? "Review your items and details. We’ll open an email draft to the store; send it to submit your request. No payment is taken here."
+        : transferSelected
+          ? "Transfer your order total using the account details below, then let us know when it’s done."
+          : "Confirm your delivery details, then pay securely on Paystack.";
+    }
+
+    async function copyBankAccount() {
+      try {
+        await navigator.clipboard.writeText(document.getElementById("bankAccountNumber").textContent);
+        showToast("Account number copied.");
+      } catch (error) {
+        showToast("Could not copy the account number. Please copy it manually.");
+      }
+    }
+
     // CHECKOUT
     function checkout() {
 
@@ -1013,30 +1108,13 @@
       }
 
       const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      document.getElementById("paymentEyebrow").textContent = apiAvailable
-        ? "SECURE PAYSTACK CHECKOUT"
-        : "DELIVERY REQUEST";
-      document.getElementById("paymentTitle").textContent = apiAvailable
+      document.getElementById("paymentTitle").textContent = apiAvailable && API_BASE_URL
         ? "Complete your order"
         : "Request a delivery";
-      document.getElementById("paymentIntro").textContent = apiAvailable
-        ? "Confirm your delivery details, then pay securely on Paystack."
-        : "Review your items and details. We’ll open an email draft to the store; send it to submit your request. No payment is taken here.";
-      document.getElementById("paymentProviderTitle").textContent = apiAvailable
-        ? "Protected checkout"
-        : "Manual order request";
-      document.getElementById("paymentProviderBadge").textContent = apiAvailable
-        ? "PAYSTACK"
-        : "EMAIL";
-      document.getElementById("paymentProviderDescription").textContent = apiAvailable
-        ? "Pay securely on Paystack. Your card details are never stored on this site."
-        : "Your email app must be configured. The store will confirm availability, delivery, and payment details before accepting the order.";
-      document.getElementById("paystackButton").textContent = apiAvailable
-        ? "Continue to secure checkout"
-        : "Email delivery request";
-      document.getElementById("paymentDisclaimer").textContent = apiAvailable
-        ? "You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified."
-        : "This sends an order request, not a confirmed order. Your cart will stay saved until the store confirms the request.";
+      const paymentMethods = document.getElementById("paymentMethods");
+      paymentMethods.hidden = !apiAvailable || !API_BASE_URL;
+      document.querySelector('input[name="paymentMethod"][value="paystack"]').checked = true;
+      updatePaymentMethod();
       document.getElementById("paymentTotal").textContent = "₦" + total.toLocaleString();
       if (currentUser) {
         document.getElementById("shippingName").value = currentUser.name;
@@ -1118,6 +1196,11 @@
           ...items,
           `Total: ₦${cart.reduce((total, item) => total + item.price * item.quantity, 0).toLocaleString()}`,
           "",
+          "Bank transfer account details:",
+          "Account name: Sotonye Wealth Ejiro",
+          "Account number: 9069502901",
+          "Bank name: Not provided — please confirm before transferring.",
+          "",
           "Please confirm item availability, delivery arrangements, and payment options with the customer. No payment has been taken."
         ].join("\n");
         window.location.href = `mailto:sotonyewealth@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -1130,6 +1213,7 @@
       transferButton.textContent = "Sending...";
 
       try {
+        const paymentMethod = selectedPaymentMethod();
         const response = await fetch(`${API_BASE_URL}/orders`, {
           method: "POST",
           headers: {
@@ -1142,7 +1226,7 @@
             items: cart,
             customer: { email: document.getElementById("shippingEmail").value.trim() },
             shippingAddress,
-            paymentMethod: "paystack"
+            paymentMethod
           })
         });
 
@@ -1150,6 +1234,14 @@
 
         if (!response.ok) {
           throw new Error(payload.message || "Unable to place order.");
+        }
+
+        if (paymentMethod === "manual") {
+          if (payload.deliveryNotificationSent !== true) {
+            throw new Error("Your order was saved, but the store email could not be sent. Please contact the store before retrying.");
+          }
+          showPaymentSuccess(true);
+          return;
         }
 
         if (!payload.payment?.authorizationUrl) {
@@ -1163,6 +1255,34 @@
         transferButton.disabled = false;
         transferButton.textContent = buttonText;
       }
+    }
+
+    function showPaymentSuccess(transferSubmitted) {
+      document.getElementById("paymentSuccessEyebrow").textContent = transferSubmitted
+        ? "TRANSFER CONFIRMATION SENT"
+        : "PAYMENT VERIFIED";
+      document.getElementById("paymentSuccessTitle").textContent = transferSubmitted
+        ? "Transaction successful"
+        : "Payment confirmed";
+      document.getElementById("paymentSuccessMessage").textContent = transferSubmitted
+        ? "Your order details have been emailed to the store. We’ll verify your transfer and follow up on your order."
+        : "Your payment has been verified. We’ll send your order to the store for processing.";
+      document.getElementById("paymentSuccessNoteTitle").textContent = transferSubmitted
+        ? "Transfer awaiting verification"
+        : "Payment verified";
+      document.getElementById("paymentSuccessNote").textContent = transferSubmitted
+        ? "The store has received your order email. This confirmation does not mean the funds have been verified."
+        : "Your payment was confirmed securely by Paystack.";
+      cart = [];
+      updateCart();
+      paymentDetails.hidden = true;
+      paymentSuccess.hidden = false;
+      paymentCenter.classList.add("open");
+      paymentCenter.setAttribute("aria-hidden", "false");
+      paymentBackdrop.classList.add("visible");
+      document.body.classList.add("no-scroll");
+      launchConfetti();
+      paymentSuccess.querySelector(".transfer-confirm").focus();
     }
 
     function launchConfetti() {
@@ -1206,16 +1326,7 @@
           return;
         }
 
-        cart = [];
-        updateCart();
-        paymentDetails.hidden = true;
-        paymentSuccess.hidden = false;
-        paymentCenter.classList.add("open");
-        paymentCenter.setAttribute("aria-hidden", "false");
-        paymentBackdrop.classList.add("visible");
-        document.body.classList.add("no-scroll");
-        launchConfetti();
-        paymentSuccess.querySelector(".transfer-confirm").focus();
+        showPaymentSuccess(false);
       } catch (error) {
         showToast(error.message || "We couldn't verify your payment.");
       }

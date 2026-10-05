@@ -52,7 +52,7 @@ To email `sotonyewealth@gmail.com` when a delivery order is ready for processing
 - `GMAIL_APP_PASSWORD` — an App Password for that account (Google 2-Step Verification must be enabled; do not use the account's regular password)
 - `DELIVERY_NOTIFICATION_EMAIL` — recipient address; defaults to `sotonyewealth@gmail.com`
 
-Generate the App Password in the Google Account security settings, then enter it only in Railway's private variables. For manual or cash-on-delivery orders the email is sent when the order is saved and clearly marks payment as pending. Paystack orders send the email only after the backend verifies successful payment. The backend records notification status to avoid duplicate messages on repeated payment callbacks and logs delivery-email failures for diagnosis.
+Generate the App Password in the Google Account security settings, then enter it only in Railway's private variables. For manual bank-transfer or cash-on-delivery orders the email is sent when the order is saved and clearly marks payment as pending. The bank-transfer checkout displays account name **Sotonye Wealth Ejiro** and account number **9069502901**; the bank institution was not provided. It shows transfer-submission success only after the store notification email is sent, and clearly states that the store must still verify the funds. Paystack orders send the email only after the backend verifies successful payment. The backend records notification status to avoid duplicate messages on repeated payment callbacks and logs delivery-email failures for diagnosis. The email-only storefront preview cannot send or verify transfer notifications and does not display a transaction-success confirmation.
 
 ## API
 

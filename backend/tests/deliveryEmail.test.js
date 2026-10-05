@@ -54,4 +54,5 @@ test("only sends Paystack delivery notifications after payment is verified", () 
   assert.equal(shouldNotifyDeliveryOrder({ paymentMethod: "paystack", paymentStatus: "pending" }), false);
   assert.equal(shouldNotifyDeliveryOrder({ paymentMethod: "paystack", paymentStatus: "paid" }), true);
   assert.equal(shouldNotifyDeliveryOrder({ paymentMethod: "cash_on_delivery", paymentStatus: "pending" }), true);
+  assert.equal(shouldNotifyDeliveryOrder({ paymentMethod: "manual", paymentStatus: "pending" }), true);
 });

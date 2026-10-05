@@ -217,11 +217,17 @@ router.post("/", checkoutRateLimit, requireDatabase, optionalProtect, asyncHandl
     }
   }
 
-  await notifyDeliveryOrder(order);
+  const deliveryNotificationSent = await notifyDeliveryOrder(order);
+  if (paymentMethod === "manual" && !deliveryNotificationSent) {
+    return res.status(502).json({
+      message: "Your order was saved, but the store email could not be sent. Please contact the store before retrying."
+    });
+  }
 
   return res.status(201).json({
     message: "Order created successfully.",
-    order
+    order,
+    deliveryNotificationSent
   });
 }));
 

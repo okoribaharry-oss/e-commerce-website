@@ -874,6 +874,12 @@ nav {
   display: none;
 }
 
+.payment-methods[hidden],
+.bank-transfer-card[hidden],
+.payment-provider-card[hidden] {
+  display: none;
+}
+
 .payment-close {
   position: absolute;
   z-index: 1;
@@ -986,6 +992,94 @@ nav {
   color: var(--text);
   font-size: 12px;
   line-height: 1.6;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+  padding: 0;
+  border: 0;
+}
+
+.payment-methods legend {
+  margin-bottom: 9px;
+  color: var(--dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.payment-method-option {
+  position: relative;
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fcfcfe;
+  cursor: pointer;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.payment-method-option:has(input:checked) {
+  border-color: var(--primary);
+  background: #f5f3ff;
+  box-shadow: 0 5px 16px rgba(104, 85, 223, 0.1);
+}
+
+.payment-method-option input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  accent-color: var(--primary);
+}
+
+.payment-method-option span {
+  display: grid;
+  gap: 3px;
+}
+
+.payment-method-option strong {
+  color: var(--dark);
+  font-size: 12px;
+}
+
+.payment-method-option small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.bank-transfer-card {
+  margin-top: 15px;
+  border-color: #dceee8;
+  background:
+    radial-gradient(circle at 100% 0, rgba(16, 167, 120, 0.13), transparent 38%),
+    linear-gradient(145deg, #fbfffd, #f6f8ff);
+  box-shadow: 0 10px 26px rgba(19, 98, 77, 0.07);
+}
+
+.bank-transfer-card .account-heading {
+  color: #126b53;
+}
+
+.bank-transfer-card .account-detail {
+  border-color: rgba(22, 107, 83, 0.11);
+}
+
+.bank-transfer-card .account-number-row {
+  flex-wrap: wrap;
+}
+
+.bank-transfer-card .account-number-row strong {
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: rgba(16, 167, 120, 0.1);
+  color: #126b53;
+  font-variant-numeric: tabular-nums;
 }
 
 .account-heading {
