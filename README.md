@@ -24,9 +24,25 @@ In development, Vite proxies the storefront's same-origin `/api` requests to `ht
 
 ## GitHub Pages
 
-The GitHub Pages deployment publishes the storefront. The frontend build exports the built-in product catalog from `backend/products.js`, so product search, filters, cart, and the shopping assistant work without a hosted API. The root Pages address redirects to the storefront source, with the catalog exporter keeping its JSON copy in sync for branch-based Pages deployments. The cart is saved in the shopper's browser.
+The Pages workflow publishes the storefront at `/e-commerce-website/frontend/` and redirects the project root there. The frontend build exports the built-in product catalog from `backend/products.js`, so product search, filters, cart, and the shopping assistant work without a hosted API. The cart is saved in the shopper's browser.
 
-To enable live accounts, orders, and Paystack checkout, deploy the Express backend and MongoDB separately. Set `MONGO_URI`, a unique `JWT_SECRET`, `PAYSTACK_SECRET_KEY`, `CLIENT_URL` (the public Pages origin), and `PAYMENT_CALLBACK_URL` (the public storefront URL ending in `/frontend/`) on the backend host. Never put the Paystack secret in frontend variables or commit it. Add the backend's HTTPS origin as the repository Actions variable `VITE_API_BASE_URL`; the Pages workflow embeds this public API URL when it builds the site. The backend verifies successful NGN payments against the server-calculated order total before marking orders paid. Configure the Paystack webhook URL as `https://<backend-host>/api/payments/webhook`; webhook requests are signature-checked.
+For the workflow's API URL variable to take effect, select **GitHub Actions** under **Repository Settings → Pages → Build and deployment → Source**. Branch publishing serves the source HTML with literal Vite placeholders and cannot embed Actions variables. With no `VITE_API_BASE_URL`, the Pages storefront remains a product-browsing preview and checkout/accounts stay unavailable.
+
+## Paystack deployment (Railway + MongoDB Atlas)
+
+1. Create a Railway service from this repository and set its root directory to `/backend`; Railway can start it with `npm start` and provide its `PORT`.
+2. Create a MongoDB Atlas database and allow the Railway service to connect. Add these variables to the Railway service:
+   - `MONGO_URI` — the Atlas connection string
+   - `JWT_SECRET` — a unique random secret of at least 32 characters
+   - `CLIENT_URL=https://okoribaharry-oss.github.io`
+   - `PAYSTACK_SECRET_KEY` — start with a Paystack test secret; enter it only in Railway's private variable settings
+   - `PAYMENT_CALLBACK_URL=https://okoribaharry-oss.github.io/e-commerce-website/frontend/`
+   - `NODE_ENV=production`
+3. After Railway generates the backend's HTTPS domain, configure the Paystack webhook as `https://<backend-host>/api/payments/webhook`.
+4. In GitHub **Settings → Pages**, select **GitHub Actions** as the source. Then open **Settings → Secrets and variables → Actions → Variables** and add `VITE_API_BASE_URL` with the Railway HTTPS origin (for example, `https://<backend-host>`, without a secret). Rerun the Pages workflow to publish the API-connected storefront at the existing URL.
+5. Test a transaction with Paystack test credentials before replacing the Railway `PAYSTACK_SECRET_KEY` with a live key.
+
+Never put the Paystack secret in frontend variables or commit it. Checkout totals are calculated from the server catalog, and the backend verifies successful NGN payments before marking orders paid.
 
 ## API
 
