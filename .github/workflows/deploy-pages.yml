@@ -53,7 +53,7 @@ jobs:
       - name: Preserve the storefront URL
         run: |
           mkdir -p dist/frontend
-          mv dist/index.html dist/assets dist/products.json dist/frontend/
+          mv dist/index.html dist/assets dist/images dist/products.json dist/frontend/
           cp ../index.html dist/index.html
         working-directory: frontend
 
