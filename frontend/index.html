@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f8fc" />
+  <meta name="description" content="Discover quality fashion, electronics and accessories at NovaShop. Great finds, fair prices, delivered to your door." />
 
   <title>NovaShop — Modern E-Commerce</title>
-   <link rel="stylesheet" href="src/style.css">
+  <link rel="stylesheet" href="src/style.css">
 </head>
 
 <body>
@@ -18,15 +20,20 @@
         <div class="logo">Nova<span>Shop</span></div>
       </div>
 
-      <ul class="nav-links">
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
         <li><a href="#home">Home</a></li>
         <li><a href="#shop">Shop</a></li>
         <li><a href="#features">Services</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
-      <button class="cart-btn" onclick="openCart()">
-        🛒 Cart (<span id="cartCount">0</span>)
+      <button class="account-btn" id="accountButton" type="button" onclick="openAccount()">Sign in</button>
+      <button class="cart-btn" type="button" onclick="openCart()" aria-label="Open shopping cart">
+        <span aria-hidden="true">🛒</span> Cart <span class="cart-count" id="cartCount" aria-live="polite">0</span>
       </button>
     </nav>
   </header>
@@ -41,7 +48,7 @@
         Great products, great prices, delivered straight to your door.
       </p>
 
-      <a href="#shop" class="hero-btn">Shop Now →</a>
+      <a href="#shop" class="hero-btn">Shop the collection <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
@@ -53,11 +60,14 @@
       <p>Explore our latest products and best sellers.</p>
     </div>
 
+    <p class="store-notice" id="storeNotice" role="status" hidden></p>
+
     <div class="tools">
 
       <input
         type="text"
         id="search"
+        aria-label="Search products"
         placeholder="🔍 Search products..."
         oninput="filterProducts()"
       />
@@ -78,112 +88,27 @@
         <button class="category" onclick="setCategory('accessories', this)">
           Accessories
         </button>
+
+        <button class="category" onclick="setCategory('gaming', this)">
+          Gaming
+        </button>
       </div>
+
+      <label class="sort-control">
+        <span>Sort by</span>
+        <select id="sortProducts" aria-label="Sort products" onchange="sortProducts()">
+          <option value="featured">Featured</option>
+          <option value="price-low">Price: low to high</option>
+          <option value="price-high">Price: high to low</option>
+          <option value="name">Name: A to Z</option>
+        </select>
+      </label>
 
     </div>
 
-    <div class="products" id="products">
+    <p class="results-count" id="resultsCount" aria-live="polite"></p>
 
-      <div class="product" data-category="fashion" data-name="Classic Sneakers">
-        <div class="product-image">
-          <span class="badge">NEW</span>
-          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Classic Sneakers</h3>
-          <div class="rating">★★★★★</div>
-          <div class="price">₦45,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Classic Sneakers', 45000, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="product" data-category="electronics" data-name="Wireless Headphones">
-        <div class="product-image">
-          <span class="badge">SALE</span>
-          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Wireless Headphones</h3>
-          <div class="rating">★★★★★</div>
-          <div class="price">₦75,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Wireless Headphones', 75000, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="product" data-category="fashion" data-name="Premium Watch">
-        <div class="product-image">
-          <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Premium Watch</h3>
-          <div class="rating">★★★★☆</div>
-          <div class="price">₦120,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Premium Watch', 120000, 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="product" data-category="accessories" data-name="Leather Bag">
-        <div class="product-image">
-          <span class="badge">POPULAR</span>
-          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Leather Bag</h3>
-          <div class="rating">★★★★★</div>
-          <div class="price">₦65,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Leather Bag', 65000, 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="product" data-category="electronics" data-name="Smartphone">
-        <div class="product-image">
-          <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Smartphone</h3>
-          <div class="rating">★★★★★</div>
-          <div class="price">₦350,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Smartphone', 350000, 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-      <div class="product" data-category="fashion" data-name="Denim Jacket">
-        <div class="product-image">
-          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80">
-        </div>
-
-        <div class="product-info">
-          <h3>Denim Jacket</h3>
-          <div class="rating">★★★★☆</div>
-          <div class="price">₦55,000</div>
-          <button class="add-btn"
-            onclick="addToCart('Denim Jacket', 55000, 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80')">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-
-    </div>
+    <div class="products" id="products"></div>
   </section>
 
   <!-- FEATURES -->
@@ -220,11 +145,12 @@
   </section>
 
   <!-- CART -->
-  <aside class="cart" id="cart">
+  <div class="cart-backdrop" id="cartBackdrop" onclick="closeCart()" aria-hidden="true"></div>
+  <aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
 
     <div class="cart-header">
-      <h2>Your Cart</h2>
-      <button onclick="closeCart()">×</button>
+      <h2 id="cartTitle">Your Cart</h2>
+      <button type="button" onclick="closeCart()" aria-label="Close shopping cart">×</button>
     </div>
 
     <div class="cart-items" id="cartItems">
@@ -238,13 +164,134 @@
         <span id="cartTotal">₦0</span>
       </div>
 
-      <button class="checkout" onclick="checkout()">
+      <button class="checkout" type="button" onclick="checkout()">
         Proceed to Checkout
       </button>
 
     </div>
 
   </aside>
+
+  <div class="payment-backdrop" id="paymentBackdrop" onclick="closePayment()" aria-hidden="true"></div>
+  <section class="payment-center" id="paymentCenter" role="dialog" aria-modal="true" aria-labelledby="paymentTitle" aria-hidden="true">
+    <button class="payment-close" type="button" onclick="closePayment()" aria-label="Close payment center">×</button>
+
+    <div class="payment-details" id="paymentDetails">
+      <div class="payment-icon" aria-hidden="true">🏦</div>
+      <p class="payment-eyebrow">SECURE MANUAL TRANSFER</p>
+      <h2 id="paymentTitle">Complete your payment</h2>
+      <p class="payment-intro">Transfer the exact amount below, then let us know when you have sent it.</p>
+
+      <div class="payment-total">
+        <span>Amount to transfer</span>
+        <strong id="paymentTotal">₦0</strong>
+      </div>
+
+      <div class="shipping-form">
+        <h3>Delivery details</h3>
+        <label>Full name<input id="shippingName" name="fullName" autocomplete="name" required></label>
+        <label>Email (optional)<input id="shippingEmail" name="email" type="email" autocomplete="email"></label>
+        <label>Phone number<input id="shippingPhone" name="phone" type="tel" autocomplete="tel" required></label>
+        <label>Street address<input id="shippingAddress" name="address" autocomplete="street-address" required></label>
+        <div class="shipping-row">
+          <label>City<input id="shippingCity" name="city" autocomplete="address-level2" required></label>
+          <label>State<input id="shippingState" name="state" autocomplete="address-level1" required></label>
+        </div>
+      </div>
+
+      <div class="account-card">
+        <div class="account-heading">
+          <span>Bank transfer details</span>
+          <span class="manual-badge">MANUAL TRANSFER</span>
+        </div>
+        <div class="account-detail">
+          <span>Account name</span>
+          <strong>Tech paradise interprise</strong>
+        </div>
+        <div class="account-detail">
+          <span>Bank name</span>
+          <strong>Confirm with NovaShop before transferring</strong>
+        </div>
+        <div class="account-detail account-number-row">
+          <span>Account number</span>
+          <strong>Contact NovaShop for verified payment details</strong>
+        </div>
+        <p class="payment-warning">Please confirm the account name and number in your banking app before sending. This page cannot verify your transfer.</p>
+      </div>
+
+      <div class="payment-order">
+        <h3>Order summary</h3>
+        <div class="payment-order-items" id="paymentOrderItems"></div>
+      </div>
+
+      <button class="transfer-confirm" type="button" onclick="confirmTransfer()">
+        I've sent the transfer
+      </button>
+      <p class="payment-disclaimer">Your confirmation is a notice only. Your order is not marked as paid until the transfer is independently checked.</p>
+    </div>
+
+    <div class="payment-success" id="paymentSuccess" hidden>
+      <div class="celebration-confetti" id="celebrationConfetti" aria-hidden="true"></div>
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <p class="payment-eyebrow">CONFIRMATION RECEIVED</p>
+      <h2>Thanks for letting us know!</h2>
+      <p class="success-message">Your transfer has been marked as sent. We’ll need to verify the payment before your order is confirmed.</p>
+      <div class="verification-note"><strong>Payment not yet verified</strong><span>This website does not connect to your bank, so this confirmation does not prove funds were received.</span></div>
+      <button class="transfer-confirm" type="button" onclick="returnToCart()">Back to my cart</button>
+    </div>
+  </section>
+
+  <div class="payment-backdrop" id="accountBackdrop" onclick="closeAccount()" aria-hidden="true"></div>
+  <section class="payment-center account-center" id="accountCenter" role="dialog" aria-modal="true" aria-labelledby="accountTitle" aria-hidden="true">
+    <button class="payment-close" type="button" onclick="closeAccount()" aria-label="Close account dialog">×</button>
+    <p class="payment-eyebrow">YOUR NOVASHOP ACCOUNT</p>
+    <h2 id="accountTitle">Welcome back</h2>
+    <p class="payment-intro" id="accountIntro">Sign in to view your account. You can also continue shopping as a guest.</p>
+    <form id="accountForm" class="account-form">
+      <label id="accountNameLabel" hidden>Name<input id="accountName" name="name" autocomplete="name"></label>
+      <label>Email<input id="accountEmail" name="email" type="email" autocomplete="email" required></label>
+      <label>Password<input id="accountPassword" name="password" type="password" autocomplete="current-password" minlength="8" required></label>
+      <p class="form-message" id="accountMessage" role="status" aria-live="polite"></p>
+      <button class="transfer-confirm" id="accountSubmit" type="submit">Sign in</button>
+    </form>
+    <button class="account-mode-toggle" id="accountOrdersButton" type="button" onclick="loadMyOrders()" hidden>View my orders</button>
+    <div class="account-orders" id="accountOrders" hidden aria-live="polite"></div>
+    <button class="account-mode-toggle" id="accountModeToggle" type="button" onclick="toggleAccountMode()">Create an account</button>
+    <button class="account-logout" id="accountLogout" type="button" onclick="signOut()" hidden>Sign out</button>
+  </section>
+
+  <button class="assistant-launcher" id="assistantLauncher" type="button" aria-label="Open AI shopping assistant" aria-expanded="false" aria-controls="shoppingAssistant">
+    <span class="assistant-launcher-icon" aria-hidden="true">✦</span>
+    <span>Ask Nova AI</span>
+  </button>
+  <section class="shopping-assistant" id="shoppingAssistant" role="dialog" aria-modal="false" aria-labelledby="assistantTitle" aria-hidden="true">
+    <div class="assistant-header">
+      <div class="assistant-avatar" aria-hidden="true">✦</div>
+      <div>
+        <h2 id="assistantTitle">Nova AI</h2>
+        <p>Shopping assistant · here to help</p>
+      </div>
+      <button class="assistant-close" id="assistantClose" type="button" aria-label="Close shopping assistant">×</button>
+    </div>
+    <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions text">
+      <div class="assistant-message assistant-message-bot">
+        Hi! I can help you find products, compare options, and answer questions about shopping. What are you looking for?
+      </div>
+    </div>
+    <div class="assistant-prompts" id="assistantPrompts">
+      <button type="button" data-prompt="Show me gaming products">Gaming picks</button>
+      <button type="button" data-prompt="What can I get under ₦50000?">Under ₦50,000</button>
+      <button type="button" data-prompt="How does delivery work?">Delivery info</button>
+    </div>
+    <form class="assistant-form" id="assistantForm">
+      <label class="visually-hidden" for="assistantInput">Ask Nova AI a question</label>
+      <input id="assistantInput" name="message" type="text" maxlength="300" placeholder="Ask about products..." autocomplete="off" required>
+      <button type="submit" aria-label="Send message">Send</button>
+    </form>
+    <p class="assistant-disclaimer">Recommendations use our store catalog; no personal data is sent to an AI provider.</p>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- FOOTER -->
   <footer id="contact">
@@ -292,18 +339,357 @@
 
   <script>
 
+    const API_BASE_URL = "/api";
     let cart = [];
     let selectedCategory = "all";
+    let allProducts = [];
+    let apiAvailable = false;
+    let currentUser = null;
+    let accountMode = "login";
+    let toastTimer;
+    const cartPanel = document.getElementById("cart");
+    const cartBackdrop = document.getElementById("cartBackdrop");
+    const cartTrigger = document.querySelector(".cart-btn");
+    const paymentCenter = document.getElementById("paymentCenter");
+    const paymentBackdrop = document.getElementById("paymentBackdrop");
+    const paymentDetails = document.getElementById("paymentDetails");
+    const paymentSuccess = document.getElementById("paymentSuccess");
+    const checkoutButton = document.querySelector(".checkout");
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    const accountCenter = document.getElementById("accountCenter");
+    const accountBackdrop = document.getElementById("accountBackdrop");
+    const accountForm = document.getElementById("accountForm");
+    const assistantLauncher = document.getElementById("assistantLauncher");
+    const shoppingAssistant = document.getElementById("shoppingAssistant");
+    const assistantMessages = document.getElementById("assistantMessages");
+    const assistantForm = document.getElementById("assistantForm");
+    const assistantInput = document.getElementById("assistantInput");
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 2400);
+    }
+
+    function openAssistant() {
+      shoppingAssistant.classList.add("open");
+      shoppingAssistant.setAttribute("aria-hidden", "false");
+      assistantLauncher.setAttribute("aria-expanded", "true");
+      assistantInput.focus();
+    }
+
+    function closeAssistant() {
+      shoppingAssistant.classList.remove("open");
+      shoppingAssistant.setAttribute("aria-hidden", "true");
+      assistantLauncher.setAttribute("aria-expanded", "false");
+      assistantLauncher.focus();
+    }
+
+    assistantLauncher.addEventListener("click", () => {
+      if (shoppingAssistant.classList.contains("open")) closeAssistant();
+      else openAssistant();
+    });
+    document.getElementById("assistantClose").addEventListener("click", closeAssistant);
+
+    function addAssistantMessage(text, sender) {
+      const message = document.createElement("div");
+      message.className = `assistant-message assistant-message-${sender}`;
+      message.textContent = text;
+      assistantMessages.appendChild(message);
+      assistantMessages.scrollTop = assistantMessages.scrollHeight;
+      return message;
+    }
+
+    function addAssistantProducts(products) {
+      const results = document.createElement("div");
+      results.className = "assistant-product-list";
+      products.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "assistant-product";
+        const image = document.createElement("img");
+        image.src = product.image;
+        image.alt = "";
+        image.loading = "lazy";
+        const details = document.createElement("div");
+        details.className = "assistant-product-details";
+        const name = document.createElement("strong");
+        name.textContent = product.name;
+        const price = document.createElement("span");
+        price.textContent = `₦${Number(product.price).toLocaleString()}`;
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.textContent = "Add";
+        addButton.addEventListener("click", () => {
+          addToCart(product.name, Number(product.price), product.image, product.id);
+        });
+        details.append(name, price);
+        card.append(image, details, addButton);
+        results.appendChild(card);
+      });
+      assistantMessages.appendChild(results);
+      assistantMessages.scrollTop = assistantMessages.scrollHeight;
+    }
+
+    function getAssistantReply(message) {
+      const text = message.toLowerCase();
+      const catalog = allProducts;
+      if (!catalog.length) {
+        return { text: "I can’t reach the product catalog right now. Please try again in a moment." };
+      }
+
+      if (/\b(hello|hi|hey|good morning|good afternoon)\b/.test(text)) {
+        return { text: "Hi! Tell me what you’re shopping for, your budget, or ask me a store question." };
+      }
+      if (/\b(delivery|shipping|deliver)\b/.test(text)) {
+        return { text: "We offer delivery to your doorstep. Delivery timing and fees depend on your location; enter your address at checkout or contact hello@novashop.com for details." };
+      }
+      if (/\b(return|refund|exchange)\b/.test(text)) {
+        return { text: "For help with a return or refund, contact hello@novashop.com with your order details so the team can assist you." };
+      }
+      if (/\b(payment|pay|transfer|bank|cash on delivery)\b/.test(text)) {
+        return { text: "Checkout currently supports manual bank transfer. Your order stays pending until the payment is independently verified. Please confirm the bank details before transferring." };
+      }
+      if (/\b(contact|support|help)\b/.test(text)) {
+        return { text: "You can reach NovaShop support at hello@novashop.com or +234 800 123 4567." };
+      }
+
+      const categoryTerms = {
+        gaming: /\b(gaming|gamer|console|controller|keyboard|gaming mouse|gaming chair|headset|monitor)\b/,
+        electronics: /\b(electronics|phone|smartphone|laptop|tablet|camera|headphones|speaker|earbuds|watch|charger)\b/,
+        fashion: /\b(fashion|clothes|clothing|shirt|t-shirt|hoodie|jacket|sneakers|shoes)\b/,
+        accessories: /\b(accessories|bag|backpack|sunglasses|wallet|bottle)\b/
+      };
+      const matchedCategory = Object.keys(categoryTerms).find(category => categoryTerms[category].test(text));
+      const budgetMatch = text.match(/(?:under|below|less than|max(?:imum)?|budget(?: of)?)\s*(?:₦|ngn)?\s*([\d,.]+)\s*(k)?/i);
+      let budget = budgetMatch ? Number(budgetMatch[1].replace(/[,.]/g, "")) : null;
+      if (budget !== null && budgetMatch[2]) budget *= 1000;
+      const queryWords = text.split(/[^a-z0-9]+/).filter(word => word.length > 2);
+      let matches = catalog.filter(product => {
+        const matchesCategory = !matchedCategory || product.category === matchedCategory;
+        const matchesBudget = budget === null || Number(product.price) <= budget;
+        return matchesCategory && matchesBudget;
+      });
+
+      if (matchedCategory || budget !== null) {
+        matches = matches.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0) || Number(a.price) - Number(b.price)).slice(0, 4);
+        if (!matches.length) {
+          return { text: `I couldn’t find ${matchedCategory ? `any ${matchedCategory} products` : "products"}${budget !== null ? ` under ₦${budget.toLocaleString()}` : ""}. Try a higher budget or another category.` };
+        }
+        return {
+          text: `Here ${matches.length === 1 ? "is a pick" : "are some picks"}${matchedCategory ? ` in ${matchedCategory}` : ""}${budget !== null ? ` under ₦${budget.toLocaleString()}` : ""}:`,
+          products: matches
+        };
+      }
+
+      const namedMatches = catalog.filter(product =>
+        queryWords.some(word => product.name.toLowerCase().includes(word))
+      ).slice(0, 4);
+      if (namedMatches.length) {
+        return { text: "I found these products that may match:", products: namedMatches };
+      }
+
+      return { text: "I can recommend gaming, fashion, electronics, or accessories. Tell me a category, a product name, or a budget (for example, “gaming under ₦100,000”)." };
+    }
+
+    function submitAssistantMessage(messageText) {
+      const message = messageText.trim();
+      if (!message) return;
+      addAssistantMessage(message, "user");
+      const reply = getAssistantReply(message);
+      addAssistantMessage(reply.text, "bot");
+      if (reply.products) addAssistantProducts(reply.products);
+    }
+
+    assistantForm.addEventListener("submit", event => {
+      event.preventDefault();
+      submitAssistantMessage(assistantInput.value);
+      assistantInput.value = "";
+      assistantInput.focus();
+    });
+
+    document.querySelectorAll(".assistant-prompts button").forEach(button => {
+      button.addEventListener("click", () => submitAssistantMessage(button.dataset.prompt));
+    });
+
+    function setCurrentUser(user) {
+      currentUser = user;
+      document.getElementById("accountButton").textContent = user
+        ? `Hi, ${user.name.split(" ")[0]}`
+        : "Sign in";
+      document.getElementById("accountForm").hidden = Boolean(user);
+      document.getElementById("accountModeToggle").hidden = Boolean(user);
+      document.getElementById("accountLogout").hidden = !user;
+      document.getElementById("accountOrdersButton").hidden = !user;
+      document.getElementById("accountOrders").hidden = true;
+      document.getElementById("accountTitle").textContent = user
+        ? `Hello, ${user.name.split(" ")[0]}`
+        : accountMode === "register" ? "Create your account" : "Welcome back";
+      document.getElementById("accountIntro").textContent = user
+        ? `Signed in as ${user.email}. Guest checkout is always available.`
+        : "Sign in to view your account. You can also continue shopping as a guest.";
+    }
+
+    function openAccount() {
+      if (!apiAvailable) {
+        showToast("Customer accounts are unavailable on this storefront preview.");
+        return;
+      }
+
+      accountCenter.classList.add("open");
+      accountCenter.setAttribute("aria-hidden", "false");
+      accountBackdrop.classList.add("visible");
+      document.body.classList.add("no-scroll");
+      accountCenter.querySelector(".payment-close").focus();
+    }
+
+    function closeAccount() {
+      if (!accountCenter.classList.contains("open")) return;
+      accountCenter.classList.remove("open");
+      accountCenter.setAttribute("aria-hidden", "true");
+      accountBackdrop.classList.remove("visible");
+      document.body.classList.remove("no-scroll");
+      document.getElementById("accountButton").focus();
+    }
+
+    function toggleAccountMode() {
+      accountMode = accountMode === "login" ? "register" : "login";
+      const registerMode = accountMode === "register";
+      document.getElementById("accountNameLabel").hidden = !registerMode;
+      document.getElementById("accountName").required = registerMode;
+      document.getElementById("accountPassword").autocomplete = registerMode ? "new-password" : "current-password";
+      document.getElementById("accountSubmit").textContent = registerMode ? "Create account" : "Sign in";
+      document.getElementById("accountModeToggle").textContent = registerMode
+        ? "Already have an account? Sign in"
+        : "Create an account";
+      document.getElementById("accountTitle").textContent = registerMode ? "Create your account" : "Welcome back";
+      document.getElementById("accountMessage").textContent = "";
+    }
+
+    function signOut() {
+      sessionStorage.removeItem("novashopToken");
+      setCurrentUser(null);
+      closeAccount();
+      showToast("You have signed out");
+    }
+
+    async function loadMyOrders() {
+      const list = document.getElementById("accountOrders");
+      const token = sessionStorage.getItem("novashopToken");
+      list.replaceChildren();
+      list.hidden = false;
+      list.textContent = "Loading your orders...";
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/orders/mine`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "Unable to load your orders.");
+        list.replaceChildren();
+        if (!result.orders.length) {
+          list.textContent = "You have no orders yet.";
+          return;
+        }
+        result.orders.forEach(order => {
+          const row = document.createElement("p");
+          const itemNames = order.items.map(item => item.name).join(", ");
+          row.textContent = `${new Date(order.createdAt).toLocaleDateString()} · ${itemNames} · ₦${Number(order.totalAmount).toLocaleString()} · ${order.status}`;
+          list.appendChild(row);
+        });
+      } catch (error) {
+        list.textContent = error.message || "Unable to load your orders.";
+      }
+    }
+
+    accountForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const submitButton = document.getElementById("accountSubmit");
+      const message = document.getElementById("accountMessage");
+      submitButton.disabled = true;
+      message.textContent = "";
+
+      const requestBody = {
+        email: document.getElementById("accountEmail").value,
+        password: document.getElementById("accountPassword").value
+      };
+      if (accountMode === "register") {
+        requestBody.name = document.getElementById("accountName").value;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/${accountMode}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "Unable to sign in.");
+        sessionStorage.setItem("novashopToken", result.token);
+        setCurrentUser(result.user);
+        accountForm.reset();
+        closeAccount();
+        showToast(accountMode === "register" ? "Account created" : "Signed in successfully");
+      } catch (error) {
+        message.textContent = error.message || "Unable to sign in.";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    async function restoreSession() {
+      const token = sessionStorage.getItem("novashopToken");
+      if (!token || !apiAvailable) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          sessionStorage.removeItem("novashopToken");
+          return;
+        }
+        const result = await response.json();
+        setCurrentUser(result.user);
+      } catch (error) {
+        showToast(error.message || "Unable to restore your account session.");
+      }
+    }
+
+    function toggleMenu(forceClose = false) {
+      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+      const shouldOpen = !forceClose && !isOpen;
+      menuToggle.setAttribute("aria-expanded", String(shouldOpen));
+      menuToggle.setAttribute("aria-label", shouldOpen ? "Close navigation menu" : "Open navigation menu");
+      navLinks.classList.toggle("open", shouldOpen);
+    }
+
+    menuToggle.addEventListener("click", () => toggleMenu());
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => toggleMenu(true));
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        if (shoppingAssistant.classList.contains("open")) closeAssistant();
+        else if (accountCenter.classList.contains("open")) closeAccount();
+        else if (!paymentCenter.classList.contains("open")) closeCart();
+        else closePayment();
+        toggleMenu(true);
+      }
+    });
 
     // ADD PRODUCT TO CART
-    function addToCart(name, price, image) {
+    function addToCart(name, price, image, productId) {
 
-      const existing = cart.find(item => item.name === name);
+      const existing = cart.find(item => item.productId === productId);
 
       if (existing) {
         existing.quantity++;
       } else {
         cart.push({
+          productId,
           name,
           price,
           image,
@@ -313,6 +699,7 @@
 
       updateCart();
       openCart();
+      showToast(`${name} added to your cart`);
     }
 
     // UPDATE CART
@@ -343,30 +730,39 @@
         count += item.quantity;
 
         const div = document.createElement("div");
-
         div.className = "cart-item";
-
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.name}">
-
-          <div class="cart-item-info">
-
-            <h4>${item.name}</h4>
-
-            <p>₦${item.price.toLocaleString()}</p>
-
-            <div class="quantity">
-              <button onclick="changeQuantity(${index}, -1)">−</button>
-              <span>${item.quantity}</span>
-              <button onclick="changeQuantity(${index}, 1)">+</button>
-            </div>
-
-            <span class="remove" onclick="removeItem(${index})">
-              Remove
-            </span>
-
-          </div>
-        `;
+        const image = document.createElement("img");
+        image.src = item.image;
+        image.alt = item.name;
+        const info = document.createElement("div");
+        info.className = "cart-item-info";
+        const name = document.createElement("h4");
+        name.textContent = item.name;
+        const price = document.createElement("p");
+        price.textContent = `₦${item.price.toLocaleString()}`;
+        const quantity = document.createElement("div");
+        quantity.className = "quantity";
+        const decrease = document.createElement("button");
+        decrease.type = "button";
+        decrease.textContent = "−";
+        decrease.setAttribute("aria-label", `Decrease ${item.name} quantity`);
+        decrease.addEventListener("click", () => changeQuantity(index, -1));
+        const quantityValue = document.createElement("span");
+        quantityValue.textContent = item.quantity;
+        const increase = document.createElement("button");
+        increase.type = "button";
+        increase.textContent = "+";
+        increase.setAttribute("aria-label", `Increase ${item.name} quantity`);
+        increase.addEventListener("click", () => changeQuantity(index, 1));
+        quantity.append(decrease, quantityValue, increase);
+        const remove = document.createElement("button");
+        remove.className = "remove";
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", `Remove ${item.name} from cart`);
+        remove.addEventListener("click", () => removeItem(index));
+        info.append(name, price, quantity, remove);
+        div.append(image, info);
 
         cartItems.appendChild(div);
       });
@@ -397,12 +793,21 @@
 
     // OPEN CART
     function openCart() {
-      document.getElementById("cart").classList.add("open");
+      cartPanel.classList.add("open");
+      cartPanel.setAttribute("aria-hidden", "false");
+      cartBackdrop.classList.add("visible");
+      document.body.classList.add("no-scroll");
+      cartPanel.querySelector(".cart-header button").focus();
     }
 
     // CLOSE CART
     function closeCart() {
-      document.getElementById("cart").classList.remove("open");
+      if (!cartPanel.classList.contains("open")) return;
+      cartPanel.classList.remove("open");
+      cartPanel.setAttribute("aria-hidden", "true");
+      cartBackdrop.classList.remove("visible");
+      document.body.classList.remove("no-scroll");
+      cartTrigger.focus();
     }
 
     // CATEGORY FILTER
@@ -426,8 +831,9 @@
         .value
         .toLowerCase();
 
-      document.querySelectorAll(".product")
-        .forEach(product => {
+      const products = [...document.querySelectorAll(".product")];
+      let visibleCount = 0;
+      products.forEach(product => {
 
           const name =
             product.dataset.name.toLowerCase();
@@ -442,11 +848,31 @@
             selectedCategory === "all" ||
             category === selectedCategory;
 
-          product.style.display =
-            matchesSearch && matchesCategory
-              ? "block"
-              : "none";
+          const isVisible = matchesSearch && matchesCategory;
+          product.hidden = !isVisible;
+          if (isVisible) visibleCount++;
         });
+      document.getElementById("resultsCount").textContent =
+        `${visibleCount} ${visibleCount === 1 ? "product" : "products"} found`;
+    }
+
+    function sortProducts() {
+      const sortBy = document.getElementById("sortProducts").value;
+      const products = [...document.querySelectorAll(".product")];
+      const priceOf = product => Number(product.querySelector(".price").textContent.replace(/[^\d]/g, ""));
+
+      products.sort((a, b) => {
+        if (sortBy === "price-low") return priceOf(a) - priceOf(b);
+        if (sortBy === "price-high") return priceOf(b) - priceOf(a);
+        if (sortBy === "name") return a.dataset.name.localeCompare(b.dataset.name);
+        return Number(a.dataset.order) - Number(b.dataset.order);
+      });
+
+      const productGrid = document.getElementById("products");
+      products.forEach(product => {
+        productGrid.appendChild(product);
+      });
+      filterProducts();
     }
 
     // CHECKOUT
@@ -457,11 +883,223 @@
         return;
       }
 
-      alert(
-        "Thank you for shopping with NovaShop! " +
-        "Connect this button to your payment gateway for real checkout."
-      );
+      if (!apiAvailable) {
+        showToast("Checkout is unavailable on this storefront preview.");
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById("paymentTotal").textContent = "₦" + total.toLocaleString();
+      if (currentUser) {
+        document.getElementById("shippingName").value = currentUser.name;
+        document.getElementById("shippingEmail").value = currentUser.email;
+      }
+
+      const orderItems = document.getElementById("paymentOrderItems");
+      orderItems.replaceChildren();
+      cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "payment-order-item";
+        const name = document.createElement("span");
+        name.textContent = `${item.name} × ${item.quantity}`;
+        const price = document.createElement("strong");
+        price.textContent = "₦" + (item.price * item.quantity).toLocaleString();
+        row.append(name, price);
+        orderItems.appendChild(row);
+      });
+
+      closeCart();
+      paymentDetails.hidden = false;
+      paymentSuccess.hidden = true;
+      paymentCenter.classList.add("open");
+      paymentCenter.setAttribute("aria-hidden", "false");
+      paymentBackdrop.classList.add("visible");
+      document.body.classList.add("no-scroll");
+      paymentCenter.querySelector(".payment-close").focus();
     }
+
+    function closePayment() {
+      if (!paymentCenter.classList.contains("open")) return;
+      paymentCenter.classList.remove("open");
+      paymentCenter.setAttribute("aria-hidden", "true");
+      paymentBackdrop.classList.remove("visible");
+      document.body.classList.remove("no-scroll");
+      openCart();
+    }
+
+    async function confirmTransfer() {
+      const transferButton = paymentDetails.querySelector(".transfer-confirm");
+      const shippingAddress = {
+        fullName: document.getElementById("shippingName").value.trim(),
+        phone: document.getElementById("shippingPhone").value.trim(),
+        address: document.getElementById("shippingAddress").value.trim(),
+        city: document.getElementById("shippingCity").value.trim(),
+        state: document.getElementById("shippingState").value.trim()
+      };
+      if (Object.values(shippingAddress).some(value => !value)) {
+        showToast("Complete all delivery details before placing your order.");
+        return;
+      }
+
+      const buttonText = transferButton.textContent;
+      transferButton.disabled = true;
+      transferButton.textContent = "Sending...";
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(sessionStorage.getItem("novashopToken")
+              ? { Authorization: `Bearer ${sessionStorage.getItem("novashopToken")}` }
+              : {})
+          },
+          body: JSON.stringify({
+            items: cart,
+            customer: { email: document.getElementById("shippingEmail").value.trim() },
+            shippingAddress,
+            paymentMethod: "manual"
+          })
+        });
+
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload.message || "Unable to place order.");
+        }
+
+        cart = [];
+        updateCart();
+        paymentDetails.hidden = true;
+        paymentSuccess.hidden = false;
+        launchConfetti();
+        paymentSuccess.querySelector(".transfer-confirm").focus();
+        showToast("Order sent successfully");
+      } catch (error) {
+        showToast(error.message || "Unable to place order.");
+      } finally {
+        transferButton.disabled = false;
+        transferButton.textContent = buttonText;
+      }
+    }
+
+    function launchConfetti() {
+      const confetti = document.getElementById("celebrationConfetti");
+      confetti.replaceChildren();
+      for (let index = 0; index < 36; index++) {
+        const piece = document.createElement("span");
+        piece.style.setProperty("--confetti-x", `${Math.random() * 100}%`);
+        piece.style.setProperty("--confetti-delay", `${Math.random() * 0.55}s`);
+        piece.style.setProperty("--confetti-hue", `${Math.floor(Math.random() * 360)}`);
+        confetti.appendChild(piece);
+      }
+    }
+
+    function returnToCart() {
+      closePayment();
+    }
+
+    function renderProducts(products) {
+      const productGrid = document.getElementById("products");
+      productGrid.innerHTML = "";
+
+      if (!products.length) {
+        productGrid.innerHTML = '<div class="empty">No products available right now.</div>';
+        document.getElementById("resultsCount").textContent = "0 products found";
+        return;
+      }
+
+      products.forEach((product, index) => {
+        const card = document.createElement("div");
+        card.className = "product";
+        card.dataset.category = product.category;
+        card.dataset.name = product.name;
+        card.dataset.order = String(index);
+
+        const imageContainer = document.createElement("div");
+        imageContainer.className = "product-image";
+        if (product.badge) {
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = product.badge;
+          imageContainer.appendChild(badge);
+        }
+        const image = document.createElement("img");
+        image.src = product.image;
+        image.alt = product.name;
+        image.loading = "lazy";
+        imageContainer.appendChild(image);
+
+        const info = document.createElement("div");
+        info.className = "product-info";
+        const name = document.createElement("h3");
+        name.textContent = product.name;
+        const ratingValue = Math.max(0, Math.min(5, Number(product.rating) || 0));
+        const rating = document.createElement("div");
+        rating.className = "rating";
+        rating.textContent = "★".repeat(ratingValue) + "☆".repeat(5 - ratingValue);
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = `₦${Number(product.price).toLocaleString()}`;
+        const addButton = document.createElement("button");
+        addButton.className = "add-btn";
+        addButton.type = "button";
+        addButton.textContent = "Add to Cart";
+        addButton.addEventListener("click", () => {
+          addToCart(product.name, Number(product.price), product.image, product.id);
+        });
+        info.append(name, rating, price, addButton);
+        card.append(imageContainer, info);
+
+        productGrid.appendChild(card);
+      });
+
+      filterProducts();
+    }
+
+    async function loadProducts() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products`);
+
+        if (!response.ok) {
+          throw new Error("Unable to load products.");
+        }
+
+        const data = await response.json();
+        if (!Array.isArray(data.products)) {
+          throw new Error("The product catalog response is invalid.");
+        }
+
+        apiAvailable = true;
+        allProducts = data.products;
+      } catch {
+        try {
+          const response = await fetch(new URL("./products.json", document.baseURI));
+          if (!response.ok) {
+            throw new Error("Unable to load the storefront catalog.");
+          }
+
+          const data = await response.json();
+          if (!Array.isArray(data.products)) {
+            throw new Error("The storefront catalog is invalid.");
+          }
+
+          allProducts = data.products;
+          const notice = document.getElementById("storeNotice");
+          notice.textContent = "You're browsing our storefront preview. Customer accounts and checkout are unavailable here.";
+          notice.hidden = false;
+        } catch (error) {
+          document.getElementById("products").innerHTML = '<div class="empty">Unable to load products right now.</div>';
+          document.getElementById("resultsCount").textContent = "0 products found";
+          showToast(error.message || "Unable to load products.");
+          return;
+        }
+      }
+
+      renderProducts(allProducts);
+    }
+
+    loadProducts().then(restoreSession);
 
   </script>
 

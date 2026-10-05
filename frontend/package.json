@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/export-catalog.cjs",
     "dev": "vite",
+    "prebuild": "node scripts/export-catalog.cjs",
     "build": "vite build",
     "preview": "vite preview"
   },
