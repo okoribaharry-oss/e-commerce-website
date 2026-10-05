@@ -26,7 +26,7 @@ In development, Vite proxies the storefront's same-origin `/api` requests to `ht
 
 The Pages workflow publishes the storefront at `/e-commerce-website/frontend/` and redirects the project root there. The frontend build exports the built-in product catalog from `backend/products.js`, so product search, filters, cart, and the shopping assistant work without a hosted API. The cart is saved in the shopper's browser.
 
-For the workflow's API URL variable to take effect, select **GitHub Actions** under **Repository Settings → Pages → Build and deployment → Source**. Branch publishing serves the source HTML with literal Vite placeholders and cannot embed Actions variables. With no `VITE_API_BASE_URL`, the Pages storefront remains a product-browsing preview and checkout/accounts stay unavailable.
+For the workflow's API URL variable to take effect, select **GitHub Actions** under **Repository Settings → Pages → Build and deployment → Source**. Branch publishing serves the source HTML with literal Vite placeholders and cannot embed Actions variables. With no working backend, the Pages storefront remains a product-browsing preview. Shoppers can submit a delivery request by opening a prefilled email draft to the store; they must send the email, and the store must confirm the request. This fallback does not create a saved order or process/confirm payment. Customer accounts and verified Paystack checkout require the hosted backend.
 
 ## Paystack deployment (Railway + MongoDB Atlas)
 

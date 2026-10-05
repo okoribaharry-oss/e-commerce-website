@@ -193,9 +193,9 @@
 
     <div class="payment-details" id="paymentDetails">
       <div class="payment-icon" aria-hidden="true">🏦</div>
-      <p class="payment-eyebrow">SECURE PAYSTACK CHECKOUT</p>
+      <p class="payment-eyebrow" id="paymentEyebrow">SECURE PAYSTACK CHECKOUT</p>
       <h2 id="paymentTitle">Complete your order</h2>
-      <p class="payment-intro">Confirm your delivery details, then pay securely on Paystack.</p>
+      <p class="payment-intro" id="paymentIntro">Confirm your delivery details, then pay securely on Paystack.</p>
 
       <div class="payment-total">
         <span>Order total</span>
@@ -216,12 +216,12 @@
 
       <div class="account-card payment-provider-card">
         <div class="account-heading">
-          <span>Protected checkout</span>
-          <span class="manual-badge">PAYSTACK</span>
+          <span id="paymentProviderTitle">Protected checkout</span>
+          <span class="manual-badge" id="paymentProviderBadge">PAYSTACK</span>
         </div>
         <div class="provider-benefits">
           <span aria-hidden="true">✓</span>
-          <p>Pay securely on Paystack. Your card details are never stored on this site.</p>
+          <p id="paymentProviderDescription">Pay securely on Paystack. Your card details are never stored on this site.</p>
         </div>
       </div>
 
@@ -233,7 +233,7 @@
       <button class="transfer-confirm" id="paystackButton" type="button" onclick="startPayment()">
         Continue to secure checkout
       </button>
-      <p class="payment-disclaimer">You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified.</p>
+      <p class="payment-disclaimer" id="paymentDisclaimer">You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified.</p>
     </div>
 
     <div class="payment-success" id="paymentSuccess" hidden>
@@ -1012,12 +1012,31 @@
         return;
       }
 
-      if (!apiAvailable) {
-        showToast("Checkout is unavailable on this storefront preview.");
-        return;
-      }
-
       const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById("paymentEyebrow").textContent = apiAvailable
+        ? "SECURE PAYSTACK CHECKOUT"
+        : "DELIVERY REQUEST";
+      document.getElementById("paymentTitle").textContent = apiAvailable
+        ? "Complete your order"
+        : "Request a delivery";
+      document.getElementById("paymentIntro").textContent = apiAvailable
+        ? "Confirm your delivery details, then pay securely on Paystack."
+        : "Review your items and details. We’ll open an email draft to the store; send it to submit your request. No payment is taken here.";
+      document.getElementById("paymentProviderTitle").textContent = apiAvailable
+        ? "Protected checkout"
+        : "Manual order request";
+      document.getElementById("paymentProviderBadge").textContent = apiAvailable
+        ? "PAYSTACK"
+        : "EMAIL";
+      document.getElementById("paymentProviderDescription").textContent = apiAvailable
+        ? "Pay securely on Paystack. Your card details are never stored on this site."
+        : "Your email app must be configured. The store will confirm availability, delivery, and payment details before accepting the order.";
+      document.getElementById("paystackButton").textContent = apiAvailable
+        ? "Continue to secure checkout"
+        : "Email delivery request";
+      document.getElementById("paymentDisclaimer").textContent = apiAvailable
+        ? "You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified."
+        : "This sends an order request, not a confirmed order. Your cart will stay saved until the store confirms the request.";
       document.getElementById("paymentTotal").textContent = "₦" + total.toLocaleString();
       if (currentUser) {
         document.getElementById("shippingName").value = currentUser.name;
@@ -1067,10 +1086,44 @@
         state: document.getElementById("shippingState").value.trim()
       };
       if (Object.values(shippingAddress).some(value => !value)) {
-        showToast("Complete all delivery details before placing your order.");
+        showToast("Complete all delivery details before continuing.");
         return;
       }
       if (!emailInput.reportValidity()) return;
+
+      if (!apiAvailable || !API_BASE_URL) {
+        const email = document.getElementById("shippingEmail").value.trim();
+        const items = cart.map(item =>
+          `- ${item.name} x ${item.quantity}: ₦${(item.price * item.quantity).toLocaleString()}`
+        );
+        const orderDate = new Intl.DateTimeFormat("en-NG", {
+          dateStyle: "full",
+          timeStyle: "long",
+          timeZone: "Africa/Lagos"
+        }).format(new Date());
+        const subject = `NovaShop delivery request from ${shippingAddress.fullName}`;
+        const body = [
+          "Delivery order request (not yet confirmed)",
+          `Date and time (Africa/Lagos): ${orderDate}`,
+          "",
+          "Customer:",
+          `Name: ${shippingAddress.fullName}`,
+          `Email: ${email}`,
+          `Phone: ${shippingAddress.phone}`,
+          "",
+          "Delivery address:",
+          `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}`,
+          "",
+          "Items:",
+          ...items,
+          `Total: ₦${cart.reduce((total, item) => total + item.price * item.quantity, 0).toLocaleString()}`,
+          "",
+          "Please confirm item availability, delivery arrangements, and payment options with the customer. No payment has been taken."
+        ].join("\n");
+        window.location.href = `mailto:sotonyewealth@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        showToast("Your email app should open with the request. Review it and press Send; the order is not placed until the store confirms it.");
+        return;
+      }
 
       const buttonText = transferButton.textContent;
       transferButton.disabled = true;
