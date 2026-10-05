@@ -38,8 +38,13 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ["cash_on_delivery", "manual"],
+    enum: ["cash_on_delivery", "manual", "paystack"],
     default: "cash_on_delivery"
+  },
+  paymentReference: {
+    type: String,
+    unique: true,
+    sparse: true
   },
   paymentStatus: {
     type: String,

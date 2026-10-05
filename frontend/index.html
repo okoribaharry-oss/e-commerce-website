@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f7f8fc" />
   <meta name="description" content="Discover quality fashion, electronics and accessories at NovaShop. Great finds, fair prices, delivered to your door." />
   <meta name="site-mode" content="%VITE_SITE_MODE%" />
+  <meta name="api-base-url" content="%VITE_API_BASE_URL%" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="NovaShop — Modern E-Commerce" />
   <meta property="og:description" content="Discover quality fashion, electronics and accessories at NovaShop." />
@@ -111,9 +112,18 @@
 
     </div>
 
-    <p class="results-count" id="resultsCount" aria-live="polite"></p>
+    <p class="results-count" id="resultsCount" aria-live="polite">Loading products…</p>
 
-    <div class="products" id="products"></div>
+    <div class="products" id="products" aria-busy="true">
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+      <div class="product-skeleton" aria-hidden="true"></div>
+    </div>
   </section>
 
   <!-- FEATURES -->
@@ -183,19 +193,19 @@
 
     <div class="payment-details" id="paymentDetails">
       <div class="payment-icon" aria-hidden="true">🏦</div>
-      <p class="payment-eyebrow">SECURE MANUAL TRANSFER</p>
-      <h2 id="paymentTitle">Complete your payment</h2>
-      <p class="payment-intro">Transfer the exact amount below, then let us know when you have sent it.</p>
+      <p class="payment-eyebrow">SECURE PAYSTACK CHECKOUT</p>
+      <h2 id="paymentTitle">Complete your order</h2>
+      <p class="payment-intro">Confirm your delivery details, then pay securely on Paystack.</p>
 
       <div class="payment-total">
-        <span>Amount to transfer</span>
+        <span>Order total</span>
         <strong id="paymentTotal">₦0</strong>
       </div>
 
       <div class="shipping-form">
         <h3>Delivery details</h3>
         <label>Full name<input id="shippingName" name="fullName" autocomplete="name" required></label>
-        <label>Email (optional)<input id="shippingEmail" name="email" type="email" autocomplete="email"></label>
+        <label>Email<input id="shippingEmail" name="email" type="email" autocomplete="email" required></label>
         <label>Phone number<input id="shippingPhone" name="phone" type="tel" autocomplete="tel" required></label>
         <label>Street address<input id="shippingAddress" name="address" autocomplete="street-address" required></label>
         <div class="shipping-row">
@@ -204,24 +214,15 @@
         </div>
       </div>
 
-      <div class="account-card">
+      <div class="account-card payment-provider-card">
         <div class="account-heading">
-          <span>Bank transfer details</span>
-          <span class="manual-badge">MANUAL TRANSFER</span>
+          <span>Protected checkout</span>
+          <span class="manual-badge">PAYSTACK</span>
         </div>
-        <div class="account-detail">
-          <span>Account name</span>
-          <strong>Tech paradise interprise</strong>
+        <div class="provider-benefits">
+          <span aria-hidden="true">✓</span>
+          <p>Pay securely on Paystack. Your card details are never stored on this site.</p>
         </div>
-        <div class="account-detail">
-          <span>Bank name</span>
-          <strong>Confirm with NovaShop before transferring</strong>
-        </div>
-        <div class="account-detail account-number-row">
-          <span>Account number</span>
-          <strong>Contact NovaShop for verified payment details</strong>
-        </div>
-        <p class="payment-warning">Please confirm the account name and number in your banking app before sending. This page cannot verify your transfer.</p>
       </div>
 
       <div class="payment-order">
@@ -229,19 +230,19 @@
         <div class="payment-order-items" id="paymentOrderItems"></div>
       </div>
 
-      <button class="transfer-confirm" type="button" onclick="confirmTransfer()">
-        I've sent the transfer
+      <button class="transfer-confirm" id="paystackButton" type="button" onclick="startPayment()">
+        Continue to secure checkout
       </button>
-      <p class="payment-disclaimer">Your confirmation is a notice only. Your order is not marked as paid until the transfer is independently checked.</p>
+      <p class="payment-disclaimer">You’ll be redirected to Paystack to complete payment. Your order is confirmed only after payment is verified.</p>
     </div>
 
     <div class="payment-success" id="paymentSuccess" hidden>
       <div class="celebration-confetti" id="celebrationConfetti" aria-hidden="true"></div>
       <div class="success-icon" aria-hidden="true">✓</div>
-      <p class="payment-eyebrow">CONFIRMATION RECEIVED</p>
-      <h2>Thanks for letting us know!</h2>
-      <p class="success-message">Your transfer has been marked as sent. We’ll need to verify the payment before your order is confirmed.</p>
-      <div class="verification-note"><strong>Payment not yet verified</strong><span>This website does not connect to your bank, so this confirmation does not prove funds were received.</span></div>
+      <p class="payment-eyebrow">PAYMENT VERIFIED</p>
+      <h2>Payment confirmed</h2>
+      <p class="success-message">Your payment has been verified. We’ll send your order to the store for processing.</p>
+      <div class="verification-note"><strong>Payment verified</strong><span>Your payment was confirmed securely by Paystack.</span></div>
       <button class="transfer-confirm" type="button" onclick="returnToCart()">Back to my cart</button>
     </div>
   </section>
@@ -343,9 +344,13 @@
 
   <script>
 
-    const API_BASE_URL = document.querySelector('meta[name="site-mode"]').content === "api"
-      ? "/api"
-      : "";
+    const apiBaseUrlMeta = document.querySelector('meta[name="api-base-url"]').content.trim();
+    const siteModeMeta = document.querySelector('meta[name="site-mode"]').content.trim();
+    const configuredApiOrigin = apiBaseUrlMeta.startsWith("%VITE_") ? "" : apiBaseUrlMeta.replace(/\/+$/, "");
+    const siteMode = siteModeMeta.startsWith("%VITE_") ? "static" : siteModeMeta;
+    const API_BASE_URL = configuredApiOrigin
+      ? (configuredApiOrigin.endsWith("/api") ? configuredApiOrigin : `${configuredApiOrigin}/api`)
+      : (siteMode === "api" ? "/api" : "");
     const CART_STORAGE_KEY = "novashopCart";
     const MAX_ITEM_QUANTITY = 99;
     const IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23eeeff4'/%3E%3Cpath d='M220 240l55-60 42 44 31-35 52 51H220z' fill='%23b8b9c9'/%3E%3Ccircle cx='365' cy='145' r='19' fill='%23b8b9c9'/%3E%3C/svg%3E";
@@ -374,6 +379,15 @@
     const assistantMessages = document.getElementById("assistantMessages");
     const assistantForm = document.getElementById("assistantForm");
     const assistantInput = document.getElementById("assistantInput");
+    const productObserver = "IntersectionObserver" in window
+      ? new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-visible");
+            productObserver.unobserve(entry.target);
+          });
+        }, { rootMargin: "0px 0px -36px 0px", threshold: 0.08 })
+      : null;
     let cartReturnFocus = cartTrigger;
 
     function restoreCart() {
@@ -515,7 +529,7 @@
       if (/\b(payment|pay|transfer|bank|cash on delivery)\b/.test(text)) {
         return {
           text: apiAvailable
-            ? "Checkout currently supports manual bank transfer. Your order stays pending until the payment is independently verified. Please confirm the bank details before transferring."
+            ? "Checkout uses Paystack's secure payment page. Orders are confirmed only after the payment is verified."
             : "Online checkout isn't available on this storefront preview. Contact hello@novashop.com for help placing an order."
         };
       }
@@ -788,6 +802,9 @@
       }
 
       updateCart();
+      cartTrigger.classList.remove("cart-bump");
+      void cartTrigger.offsetWidth;
+      cartTrigger.classList.add("cart-bump");
       openCart();
       showToast(`${name} added to your cart`);
     }
@@ -1040,8 +1057,9 @@
       openCart(cartReturnFocus);
     }
 
-    async function confirmTransfer() {
-      const transferButton = paymentDetails.querySelector(".transfer-confirm");
+    async function startPayment() {
+      const transferButton = document.getElementById("paystackButton");
+      const emailInput = document.getElementById("shippingEmail");
       const shippingAddress = {
         fullName: document.getElementById("shippingName").value.trim(),
         phone: document.getElementById("shippingPhone").value.trim(),
@@ -1053,6 +1071,7 @@
         showToast("Complete all delivery details before placing your order.");
         return;
       }
+      if (!emailInput.reportValidity()) return;
 
       const buttonText = transferButton.textContent;
       transferButton.disabled = true;
@@ -1071,7 +1090,7 @@
             items: cart,
             customer: { email: document.getElementById("shippingEmail").value.trim() },
             shippingAddress,
-            paymentMethod: "manual"
+            paymentMethod: "paystack"
           })
         });
 
@@ -1081,13 +1100,11 @@
           throw new Error(payload.message || "Unable to place order.");
         }
 
-        cart = [];
-        updateCart();
-        paymentDetails.hidden = true;
-        paymentSuccess.hidden = false;
-        launchConfetti();
-        paymentSuccess.querySelector(".transfer-confirm").focus();
-        showToast("Order sent successfully");
+        if (!payload.payment?.authorizationUrl) {
+          throw new Error("Secure checkout could not be started. Please try again.");
+        }
+
+        window.location.assign(payload.payment.authorizationUrl);
       } catch (error) {
         showToast(error.message || "Unable to place order.");
       } finally {
@@ -1112,9 +1129,50 @@
       closePayment();
     }
 
+    async function handlePaymentCallback() {
+      const params = new URLSearchParams(window.location.search);
+      const reference = params.get("reference") || params.get("trxref");
+      if (!reference) return;
+
+      window.history.replaceState({}, "", `${window.location.pathname}${window.location.hash}`);
+      if (!API_BASE_URL) {
+        showToast("We couldn't verify your payment. Please contact the store before retrying.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/payments/verify/${encodeURIComponent(reference)}`
+        );
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message || "We couldn't verify your payment.");
+        }
+
+        if (!result.paid) {
+          showToast("Payment wasn't completed. Your cart is still saved.");
+          return;
+        }
+
+        cart = [];
+        updateCart();
+        paymentDetails.hidden = true;
+        paymentSuccess.hidden = false;
+        paymentCenter.classList.add("open");
+        paymentCenter.setAttribute("aria-hidden", "false");
+        paymentBackdrop.classList.add("visible");
+        document.body.classList.add("no-scroll");
+        launchConfetti();
+        paymentSuccess.querySelector(".transfer-confirm").focus();
+      } catch (error) {
+        showToast(error.message || "We couldn't verify your payment.");
+      }
+    }
+
     function renderProducts(products) {
       const productGrid = document.getElementById("products");
       productGrid.replaceChildren();
+      productGrid.setAttribute("aria-busy", "false");
 
       if (!products.length) {
         const empty = document.createElement("div");
@@ -1128,6 +1186,10 @@
       products.forEach((product, index) => {
         const card = document.createElement("article");
         card.className = "product";
+        if (productObserver) {
+          card.classList.add("product-reveal");
+          card.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 65}ms`);
+        }
         card.dataset.category = product.category;
         card.dataset.name = product.name;
         card.dataset.search = [product.name, product.category, product.description]
@@ -1181,6 +1243,7 @@
         card.append(imageContainer, info);
 
         productGrid.appendChild(card);
+        if (productObserver) productObserver.observe(card);
       });
 
       filterProducts();
@@ -1240,7 +1303,10 @@
 
     cart = restoreCart();
     updateCart();
-    loadProducts().then(restoreSession);
+    loadProducts().then(async () => {
+      await restoreSession();
+      await handlePaymentCallback();
+    });
 
   </script>
 

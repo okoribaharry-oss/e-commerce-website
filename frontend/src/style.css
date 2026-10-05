@@ -175,6 +175,16 @@ nav {
   transform: translateY(-2px);
 }
 
+.cart-btn.cart-bump {
+  animation: cart-bump 380ms cubic-bezier(0.2, 0.75, 0.35, 1.35);
+}
+
+@keyframes cart-bump {
+  45% {
+    transform: scale(1.08);
+  }
+}
+
 .cart-count {
   display: inline-grid;
   min-width: 23px;
@@ -409,6 +419,23 @@ nav {
   gap: 24px;
 }
 
+.product-skeleton {
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background:
+    linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.82) 42%, transparent 64%) 0 0 / 220% 100%,
+    linear-gradient(#eceef5 0 64%, #fff 64%);
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    background-position: 200% 0, 0 0;
+  }
+}
+
 .product {
   overflow: hidden;
   border: 1px solid rgba(233, 234, 241, 0.85);
@@ -416,6 +443,20 @@ nav {
   background: var(--white);
   box-shadow: 0 8px 25px rgba(34, 35, 64, 0.055);
   transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.product-reveal {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  transition:
+    opacity 520ms ease var(--reveal-delay, 0ms),
+    transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms),
+    box-shadow 220ms ease;
+}
+
+.product-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .product:hover {
@@ -432,6 +473,21 @@ nav {
   height: clamp(190px, 23vw, 270px);
   overflow: hidden;
   background: #eeeff4;
+}
+
+.product-image::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 28%;
+  background: linear-gradient(transparent, rgba(25, 26, 44, 0.14));
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.product:hover .product-image::after {
+  opacity: 1;
 }
 
 .product-image img {
@@ -897,6 +953,39 @@ nav {
   border: 1px solid var(--border);
   border-radius: 16px;
   background: #fcfcfe;
+}
+
+.payment-provider-card {
+  background:
+    radial-gradient(circle at 100% 0, rgba(16, 167, 120, 0.09), transparent 42%),
+    #fcfcfe;
+}
+
+.provider-benefits {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 0 2px;
+  border-top: 1px solid var(--border);
+}
+
+.provider-benefits > span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(16, 167, 120, 0.12);
+  color: #087b5c;
+  font-weight: 800;
+}
+
+.provider-benefits p {
+  margin: 1px 0 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .account-heading {
@@ -1816,6 +1905,11 @@ footer a:hover {
     gap: 11px;
   }
 
+  .product-skeleton {
+    min-height: 285px;
+    border-radius: 15px;
+  }
+
   .product {
     border-radius: 15px;
   }
@@ -1962,5 +2056,14 @@ footer a:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .product-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .product-skeleton {
+    animation: none;
   }
 }

@@ -1,4 +1,6 @@
 const express = require("express");
+const { randomUUID } = require("node:crypto");
+const { rateLimit } = require("express-rate-limit");
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
@@ -9,6 +11,13 @@ const asyncHandler = require("../middleware/asyncHandler");
 const requireDatabase = require("../middleware/requireDatabase");
 
 const router = express.Router();
+const checkoutRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many checkout attempts. Please try again later." }
+});
 const validStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 const requiredAddressFields = ["fullName", "phone", "address", "city", "state"];
 
@@ -31,7 +40,7 @@ const restoreReservedStock = async reservations => {
   }
 };
 
-router.post("/", requireDatabase, optionalProtect, asyncHandler(async (req, res) => {
+router.post("/", checkoutRateLimit, requireDatabase, optionalProtect, asyncHandler(async (req, res) => {
   const { items, shippingAddress, customer = {}, paymentMethod = "manual" } = req.body || {};
 
   if (!Array.isArray(items) || items.length === 0) {
@@ -51,12 +60,18 @@ router.post("/", requireDatabase, optionalProtect, asyncHandler(async (req, res)
   if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
     return res.status(400).json({ message: "Enter a valid email address." });
   }
+  if (paymentMethod === "paystack" && !customerEmail) {
+    return res.status(400).json({ message: "An email address is required for secure checkout." });
+  }
+  if (paymentMethod === "paystack" && !process.env.PAYSTACK_SECRET_KEY) {
+    return res.status(503).json({ message: "Secure checkout is not configured yet. Please contact the store." });
+  }
 
   if (requiredAddressFields.some(field => shippingAddress[field].trim().length > 200)) {
     return res.status(400).json({ message: "A delivery detail is too long." });
   }
 
-  if (!["manual", "cash_on_delivery"].includes(paymentMethod)) {
+  if (!["manual", "cash_on_delivery", "paystack"].includes(paymentMethod)) {
     return res.status(400).json({ message: "Choose a supported payment method." });
   }
 
@@ -121,6 +136,7 @@ router.post("/", requireDatabase, optionalProtect, asyncHandler(async (req, res)
     throw error;
   }
 
+  const paymentReference = paymentMethod === "paystack" ? randomUUID() : undefined;
   let order;
   try {
     order = await Order.create({
@@ -133,11 +149,71 @@ router.post("/", requireDatabase, optionalProtect, asyncHandler(async (req, res)
       items: orderItems,
       totalAmount: orderItems.reduce((total, item) => total + item.price * item.quantity, 0),
       shippingAddress: Object.fromEntries(requiredAddressFields.map(field => [field, shippingAddress[field].trim()])),
-      paymentMethod
+      paymentMethod,
+      paymentReference
     });
   } catch (error) {
     await restoreReservedStock(stockReservations);
     throw error;
+  }
+
+  if (paymentMethod === "paystack") {
+    try {
+      const response = await fetch("https://api.paystack.co/transaction/initialize", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json"
+        },
+        signal: AbortSignal.timeout(10000),
+        body: JSON.stringify({
+          email: customerEmail,
+          amount: Math.round(order.totalAmount * 100),
+          currency: "NGN",
+          reference: paymentReference,
+          callback_url: process.env.PAYMENT_CALLBACK_URL || `${process.env.CLIENT_URL}/`,
+          metadata: { orderId: String(order._id) }
+        })
+      });
+      const result = await response.json();
+      const authorizationUrl = result?.data?.authorization_url;
+      const checkoutUrl = typeof authorizationUrl === "string"
+        ? new URL(authorizationUrl)
+        : null;
+
+      if (
+        !response.ok ||
+        result?.status !== true ||
+        !checkoutUrl ||
+        checkoutUrl.protocol !== "https:" ||
+        checkoutUrl.hostname !== "checkout.paystack.com"
+      ) {
+        console.error("Paystack checkout initialization failed.", { status: response.status });
+        order.paymentStatus = "failed";
+        await order.save();
+        await restoreReservedStock(stockReservations);
+        return res.status(502).json({
+          message: "Secure checkout could not be started. Please try again."
+        });
+      }
+
+      return res.status(201).json({
+        message: "Order created. Continue to secure checkout to complete payment.",
+        order,
+        payment: {
+          authorizationUrl: checkoutUrl.toString(),
+          reference: paymentReference
+        }
+      });
+    } catch (error) {
+      console.error("Paystack checkout initialization failed:", error.message);
+      order.paymentStatus = "failed";
+      await order.save();
+      await restoreReservedStock(stockReservations);
+      return res.status(502).json({
+        message: "Secure checkout is temporarily unavailable. Please try again."
+      });
+    }
   }
 
   return res.status(201).json({
