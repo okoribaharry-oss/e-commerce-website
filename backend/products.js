@@ -274,8 +274,7 @@ const products = [
     name: "Wireless Charging Pad",
     category: "electronics",
     price: 25000,
-    image:
-      "https://images.unsplash.com/photo-1591290619762-c588f0e57a80?auto=format&fit=crop&w=600&q=80",
+    image: "images/wireless-charging-pad.svg",
     rating: 4,
     badge: ""
   },

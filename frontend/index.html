@@ -322,15 +322,14 @@
 
       <div>
         <h3>Customer Service</h3>
-        <p><a href="mailto:hello@novashop.com">Shipping information</a></p>
-        <p><a href="mailto:hello@novashop.com">Returns &amp; refunds</a></p>
-        <p><a href="mailto:hello@novashop.com">Help &amp; support</a></p>
+        <p><a href="mailto:sotonyewealth@gmail.com?subject=NovaShop%20delivery%20question">Shipping information</a></p>
+        <p><a href="mailto:sotonyewealth@gmail.com?subject=NovaShop%20return%20or%20refund">Returns &amp; refunds</a></p>
+        <p><a href="mailto:sotonyewealth@gmail.com?subject=NovaShop%20support">Help &amp; support</a></p>
       </div>
 
       <div>
         <h3>Contact</h3>
-        <p>📧 <a href="mailto:hello@novashop.com">hello@novashop.com</a></p>
-        <p>📞 <a href="tel:+2348001234567">+234 800 123 4567</a></p>
+        <p>📧 <a href="mailto:sotonyewealth@gmail.com">sotonyewealth@gmail.com</a></p>
         <p>📍 Nigeria</p>
       </div>
 
@@ -519,22 +518,22 @@
       if (/\b(delivery|shipping|deliver)\b/.test(text)) {
         return {
           text: apiAvailable
-            ? "We offer delivery to your doorstep. Delivery timing and fees depend on your location; enter your address at checkout or contact hello@novashop.com for details."
-            : "Delivery is not available through this storefront preview yet. Contact hello@novashop.com for help with an order."
+            ? "We offer delivery to your doorstep. Delivery timing and fees depend on your location; enter your address at checkout or email sotonyewealth@gmail.com for details."
+            : "Checkout is not enabled on this storefront preview, so delivery orders cannot be placed here yet. Email sotonyewealth@gmail.com for help."
         };
       }
       if (/\b(return|refund|exchange)\b/.test(text)) {
-        return { text: "For help with a return or refund, contact hello@novashop.com with your order details so the team can assist you." };
+        return { text: "For help with a return or refund, email sotonyewealth@gmail.com with your order details." };
       }
       if (/\b(payment|pay|transfer|bank|cash on delivery)\b/.test(text)) {
         return {
           text: apiAvailable
             ? "Checkout uses Paystack's secure payment page. Orders are confirmed only after the payment is verified."
-            : "Online checkout isn't available on this storefront preview. Contact hello@novashop.com for help placing an order."
+            : "Online checkout is not enabled on this storefront preview yet. Email sotonyewealth@gmail.com for help."
         };
       }
       if (/\b(contact|support|help)\b/.test(text)) {
-        return { text: "You can reach NovaShop support at hello@novashop.com or +234 800 123 4567." };
+        return { text: "You can reach NovaShop support at sotonyewealth@gmail.com." };
       }
 
       const categoryTerms = {
@@ -1283,7 +1282,7 @@
 
           allProducts = data.products;
           const notice = document.getElementById("storeNotice");
-          notice.textContent = "You're browsing our storefront preview. Customer accounts and checkout are unavailable here.";
+          notice.textContent = "You're browsing our storefront preview. Checkout and customer accounts aren't available yet; email sotonyewealth@gmail.com for help.";
           notice.hidden = false;
         } catch (error) {
           const message = error.message || "Unable to load products.";

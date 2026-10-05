@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="title">
+  <title id="title">Wireless charging pad</title>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4f1ff"/>
+      <stop offset="1" stop-color="#e4e9f7"/>
+    </linearGradient>
+    <linearGradient id="pad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#34364b"/>
+      <stop offset="1" stop-color="#171927"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" rx="28" fill="url(#background)"/>
+  <ellipse cx="302" cy="301" rx="172" ry="28" fill="#22243a" opacity=".12"/>
+  <g transform="rotate(-12 300 220)">
+    <rect x="145" y="126" width="310" height="174" rx="42" fill="url(#pad)"/>
+    <rect x="157" y="138" width="286" height="150" rx="34" fill="#26293c"/>
+    <circle cx="300" cy="213" r="38" fill="none" stroke="#b9a8ff" stroke-width="6" opacity=".9"/>
+    <path d="M278 210a22 22 0 0 1 44 0M286 223a14 14 0 0 1 28 0" fill="none" stroke="#ddd5ff" stroke-linecap="round" stroke-width="5"/>
+    <circle cx="300" cy="235" r="3.5" fill="#ddd5ff"/>
+    <rect x="207" y="91" width="186" height="16" rx="8" fill="#fff" opacity=".65"/>
+  </g>
+  <path d="M451 117c18 10 30 28 34 48M465 99c27 15 45 39 51 68" fill="none" stroke="#8b78dc" stroke-linecap="round" stroke-width="8" opacity=".72"/>
+</svg>
