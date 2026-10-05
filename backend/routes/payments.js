@@ -3,6 +3,7 @@ const { rateLimit } = require("express-rate-limit");
 const Order = require("../models/Order");
 const asyncHandler = require("../middleware/asyncHandler");
 const requireDatabase = require("../middleware/requireDatabase");
+const { notifyDeliveryOrder } = require("../notifications/deliveryEmail");
 const {
   hasValidWebhookSignature,
   matchesSuccessfulCharge
@@ -39,6 +40,8 @@ const markOrderPaid = async transaction => {
     if (order.status === "pending") order.status = "processing";
     await order.save();
   }
+
+  await notifyDeliveryOrder(order);
 
   return order;
 };

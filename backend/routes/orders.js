@@ -9,6 +9,7 @@ const { protect } = require("../middleware/auth");
 const adminOnly = require("../middleware/admin");
 const asyncHandler = require("../middleware/asyncHandler");
 const requireDatabase = require("../middleware/requireDatabase");
+const { notifyDeliveryOrder } = require("../notifications/deliveryEmail");
 
 const router = express.Router();
 const checkoutRateLimit = rateLimit({
@@ -215,6 +216,8 @@ router.post("/", checkoutRateLimit, requireDatabase, optionalProtect, asyncHandl
       });
     }
   }
+
+  await notifyDeliveryOrder(order);
 
   return res.status(201).json({
     message: "Order created successfully.",

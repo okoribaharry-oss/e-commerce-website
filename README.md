@@ -30,7 +30,7 @@ For the workflow's API URL variable to take effect, select **GitHub Actions** un
 
 ## Paystack deployment (Railway + MongoDB Atlas)
 
-1. Create a Railway service from this repository and set its root directory to `/backend`; Railway can start it with `npm start` and provide its `PORT`.
+1. Create a Railway service from this repository and set its root directory to `/backend`; use Node.js 20 or newer. Railway can start it with `npm start` and provide its `PORT`.
 2. Create a MongoDB Atlas database and allow the Railway service to connect. Add these variables to the Railway service:
    - `MONGO_URI` — the Atlas connection string
    - `JWT_SECRET` — a unique random secret of at least 32 characters
@@ -43,6 +43,16 @@ For the workflow's API URL variable to take effect, select **GitHub Actions** un
 5. Test a transaction with Paystack test credentials before replacing the Railway `PAYSTACK_SECRET_KEY` with a live key.
 
 Never put the Paystack secret in frontend variables or commit it. Checkout totals are calculated from the server catalog, and the backend verifies successful NGN payments before marking orders paid.
+
+### Delivery email notifications
+
+To email `sotonyewealth@gmail.com` when a delivery order is ready for processing, configure these private variables on the backend (Railway):
+
+- `GMAIL_USER` — the Gmail account used to send notifications
+- `GMAIL_APP_PASSWORD` — an App Password for that account (Google 2-Step Verification must be enabled; do not use the account's regular password)
+- `DELIVERY_NOTIFICATION_EMAIL` — recipient address; defaults to `sotonyewealth@gmail.com`
+
+Generate the App Password in the Google Account security settings, then enter it only in Railway's private variables. For manual or cash-on-delivery orders the email is sent when the order is saved and clearly marks payment as pending. Paystack orders send the email only after the backend verifies successful payment. The backend records notification status to avoid duplicate messages on repeated payment callbacks and logs delivery-email failures for diagnosis.
 
 ## API
 

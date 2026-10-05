@@ -51,6 +51,13 @@ const orderSchema = new mongoose.Schema({
     enum: ["pending", "paid", "failed"],
     default: "pending"
   },
+  deliveryNotificationStatus: {
+    type: String,
+    enum: ["pending", "sending", "sent", "failed"],
+    default: "pending"
+  },
+  deliveryNotificationStartedAt: Date,
+  deliveryNotificationSentAt: Date,
   status: {
     type: String,
     enum: [
