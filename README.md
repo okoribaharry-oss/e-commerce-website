@@ -24,7 +24,7 @@ In development, Vite proxies the storefront's same-origin `/api` requests to `ht
 
 ## GitHub Pages
 
-The GitHub Pages deployment publishes a static storefront. The frontend build exports the built-in product catalog from `backend/products.js`, so product search, filters, cart, and the shopping assistant work without a hosted API. The cart is saved in the shopper's browser. The static build skips API requests and displays a preview notice; customer accounts and checkout remain unavailable until the backend and MongoDB are deployed and connected. Local development defaults to API mode and uses the Vite proxy.
+The GitHub Pages deployment publishes a static storefront. The frontend build exports the built-in product catalog from `backend/products.js`, so product search, filters, cart, and the shopping assistant work without a hosted API. The root Pages address redirects to the storefront source, with the catalog exporter keeping its JSON copy in sync for branch-based Pages deployments. The cart is saved in the shopper's browser. Static mode skips API requests and displays a preview notice; customer accounts and checkout remain unavailable until the backend and MongoDB are deployed and connected. Local development defaults to API mode and uses the Vite proxy.
 
 ## API
 

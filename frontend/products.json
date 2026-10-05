@@ -1,0 +1,274 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Classic Sneakers",
+      "category": "fashion",
+      "price": 45000,
+      "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 2,
+      "name": "Wireless Headphones",
+      "category": "electronics",
+      "price": 75000,
+      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "SALE"
+    },
+    {
+      "id": 3,
+      "name": "Premium Watch",
+      "category": "fashion",
+      "price": 120000,
+      "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 4,
+      "name": "Leather Bag",
+      "category": "accessories",
+      "price": 65000,
+      "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "POPULAR"
+    },
+    {
+      "id": 5,
+      "name": "Smartphone",
+      "category": "electronics",
+      "price": 350000,
+      "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": ""
+    },
+    {
+      "id": 6,
+      "name": "Denim Jacket",
+      "category": "fashion",
+      "price": 55000,
+      "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 7,
+      "name": "Cotton T-Shirt",
+      "category": "fashion",
+      "price": 28000,
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 8,
+      "name": "Running Shoes",
+      "category": "fashion",
+      "price": 62000,
+      "image": "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 9,
+      "name": "Smartwatch",
+      "category": "electronics",
+      "price": 95000,
+      "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "POPULAR"
+    },
+    {
+      "id": 10,
+      "name": "Bluetooth Speaker",
+      "category": "electronics",
+      "price": 48000,
+      "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 11,
+      "name": "Classic Sunglasses",
+      "category": "accessories",
+      "price": 22000,
+      "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 12,
+      "name": "Travel Backpack",
+      "category": "accessories",
+      "price": 58000,
+      "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 13,
+      "name": "Gaming Console",
+      "category": "gaming",
+      "price": 680000,
+      "image": "https://images.unsplash.com/photo-1486401899868-0e435ed85128?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "POPULAR"
+    },
+    {
+      "id": 14,
+      "name": "Wireless Gaming Controller",
+      "category": "gaming",
+      "price": 85000,
+      "image": "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 15,
+      "name": "RGB Gaming Keyboard",
+      "category": "gaming",
+      "price": 72000,
+      "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 16,
+      "name": "Precision Gaming Mouse",
+      "category": "gaming",
+      "price": 38000,
+      "image": "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": ""
+    },
+    {
+      "id": 17,
+      "name": "Gaming Headset",
+      "category": "gaming",
+      "price": 64000,
+      "image": "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": "SALE"
+    },
+    {
+      "id": 18,
+      "name": "Gaming Chair",
+      "category": "gaming",
+      "price": 245000,
+      "image": "https://images.unsplash.com/photo-1598550476439-6847785fcea6?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": ""
+    },
+    {
+      "id": 19,
+      "name": "Portable Bluetooth Earbuds",
+      "category": "electronics",
+      "price": 42000,
+      "image": "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": "NEW"
+    },
+    {
+      "id": 20,
+      "name": "Mirrorless Camera",
+      "category": "electronics",
+      "price": 520000,
+      "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": ""
+    },
+    {
+      "id": 21,
+      "name": "Laptop",
+      "category": "electronics",
+      "price": 780000,
+      "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "POPULAR"
+    },
+    {
+      "id": 22,
+      "name": "Tablet",
+      "category": "electronics",
+      "price": 390000,
+      "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 23,
+      "name": "Classic Hoodie",
+      "category": "fashion",
+      "price": 42000,
+      "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": ""
+    },
+    {
+      "id": 24,
+      "name": "Canvas Sneakers",
+      "category": "fashion",
+      "price": 39000,
+      "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": "SALE"
+    },
+    {
+      "id": 25,
+      "name": "Leather Wallet",
+      "category": "accessories",
+      "price": 18000,
+      "image": "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 26,
+      "name": "Everyday Wristwatch",
+      "category": "accessories",
+      "price": 88000,
+      "image": "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 27,
+      "name": "Stainless Steel Water Bottle",
+      "category": "accessories",
+      "price": 16000,
+      "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 28,
+      "name": "Wireless Charging Pad",
+      "category": "electronics",
+      "price": 25000,
+      "image": "https://images.unsplash.com/photo-1591290619762-c588f0e57a80?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    },
+    {
+      "id": 29,
+      "name": "Gaming Monitor",
+      "category": "gaming",
+      "price": 330000,
+      "image": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80",
+      "rating": 5,
+      "badge": "NEW"
+    },
+    {
+      "id": 30,
+      "name": "Gaming Desk",
+      "category": "gaming",
+      "price": 185000,
+      "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80",
+      "rating": 4,
+      "badge": ""
+    }
+  ]
+}

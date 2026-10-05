@@ -343,9 +343,9 @@
 
   <script>
 
-    const API_BASE_URL = document.querySelector('meta[name="site-mode"]').content === "static"
-      ? ""
-      : "/api";
+    const API_BASE_URL = document.querySelector('meta[name="site-mode"]').content === "api"
+      ? "/api"
+      : "";
     const CART_STORAGE_KEY = "novashopCart";
     const MAX_ITEM_QUANTITY = 99;
     const IMAGE_FALLBACK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23eeeff4'/%3E%3Cpath d='M220 240l55-60 42 44 31-35 52 51H220z' fill='%23b8b9c9'/%3E%3Ccircle cx='365' cy='145' r='19' fill='%23b8b9c9'/%3E%3C/svg%3E";
